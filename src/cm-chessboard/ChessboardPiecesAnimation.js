@@ -24,7 +24,8 @@ export class ChessboardPiecesAnimation {
 
     seekChanges(fromSquares, toSquares) {
         const appearedList = [], disappearedList = [], changes = []
-        for (let i = 0; i < 64; i++) {
+        let N = this.view.rows * this.view.columns
+        for (let i = 0; i < N; i++) {
             const previousSquare = fromSquares[i]
             const newSquare = toSquares[i]
             if (newSquare !== previousSquare) {
@@ -37,7 +38,7 @@ export class ChessboardPiecesAnimation {
             }
         }
         appearedList.forEach((appeared) => {
-            let shortestDistance = 8
+            let shortestDistance = Math.max(this.view.rows, this.view.columns) // TODO: check this
             let foundMoved = undefined
             disappearedList.forEach((disappeared) => {
                 if (appeared.piece === disappeared.piece) {
@@ -131,11 +132,11 @@ export class ChessboardPiecesAnimation {
     }
 
     squareDistance(index1, index2) {
-        const file1 = index1 % 8
-        const rank1 = Math.floor(index1 / 8)
-        const file2 = index2 % 8
-        const rank2 = Math.floor(index2 / 8)
-        return Math.max(Math.abs(rank2 - rank1), Math.abs(file2 - file1))
+        const column1 = index1 % this.view.columns
+        const row1 = Math.floor(index1 / this.view.columns)
+        const column2 = index2 % this.view.columns
+        const row2 = Math.floor(index2 / this.view.columns)
+        return Math.max(Math.abs(row2 - row1), Math.abs(column2 - column1))
     }
 
 }
