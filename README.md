@@ -1,3 +1,7 @@
+# cm-draughtsboard
+
+A modified version of cm-chessboard that targets the game of draughts.
+
 # cm-chessboard
 
 A JavaScript chessboard which is lightweight, ES6 module based, responsive, SVG rendered and **without dependencies**.
