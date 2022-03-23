@@ -9,8 +9,8 @@
  */
 
 import {DraughtsboardView} from "./DraughtsboardView.js"
-import {DraughtsboardState} from "./DraughtsboardState.js"
-import {COLOR, SQUARE_SELECT_TYPE, BORDER_TYPE, MARKER_TYPE, PIECE} from "./Chessboard.js";
+import {DraughtsboardState, pieceTypeToPiece} from "./DraughtsboardState.js"
+import {COLOR, SQUARE_SELECT_TYPE, BORDER_TYPE, MARKER_TYPE} from "./Chessboard.js";
 
 export const FEN_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........oooooooooooooooooooo"
 export const FEN_EMPTY_POSITION = ".................................................."
@@ -82,13 +82,57 @@ export class Draughtsboard {
 
     // API //
 
-    setPiece(square, piece) {
-        this.state.setPiece(this.state.squareToIndex(square), piece)
+    #setPieceIndex(index, piece) {
+        this.state.setPiece(index, pieceTypeToPiece(piece))
         this.view.drawPieces(this.state.squares)
     }
 
-    getPiece(square) {
-        return this.state.squares[this.state.squareToIndex(square)]
+    #getPieceIndex(index) {
+        return this.state.squares[index]
+    }
+
+    #movePieceIndex(indexFrom, indexTo, animated = true) {
+        return new Promise((resolve, reject) => {
+            const prevSquares = this.state.squares.slice(0) // clone
+            const pieceFrom = this.#getPieceIndex(indexFrom)
+            if(!pieceFrom) {
+                reject("no piece on square " + indexFrom)
+            } else {
+                this.state.squares[indexFrom] = null
+                this.state.squares[indexTo] = pieceFrom
+                if (animated) {
+                    this.view.animatePieces(prevSquares, this.state.squares, () => {
+                        resolve()
+                    })
+                } else {
+                    this.view.drawPieces(this.state.squares)
+                    resolve()
+                }
+            }
+        })
+    }
+
+    f2index(f)
+    {
+        const [row, column] = this.state.f2rc(f)
+        return (this.state.getRows() - row - 1) * this.state.getColumns() + column
+    }
+
+    setPiece(f, piece) {
+        let index = this.f2index(f)
+        this.#setPieceIndex(index, piece)
+    }
+
+    getPiece(f) {
+        let index = this.f2index(f)
+        return this.#getPieceIndex(index)
+    }
+
+    movePiece(from, to, animated = true)
+    {
+        let indexFrom = this.f2index(from)
+        let indexTo = this.f2index(to)
+        return this.#movePieceIndex(indexFrom, indexTo)
     }
 
     setPosition(fen, animated = true) {

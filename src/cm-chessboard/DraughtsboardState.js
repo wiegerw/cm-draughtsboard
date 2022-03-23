@@ -43,6 +43,18 @@ function pieceToPieceType(piece)
   }
 }
 
+export function pieceTypeToPiece(piece)
+{
+  switch (piece)
+  {
+    case PIECE_TYPE.blackPiece: return 'bp'
+    case PIECE_TYPE.blackKing: return 'bq'
+    case PIECE_TYPE.whitePiece: return 'wp'
+    case PIECE_TYPE.whiteKing: return 'wq'
+    default: return undefined
+  }
+}
+
 export class DraughtsboardState extends ChessboardState
 {
   // PDN game type attributes
@@ -219,6 +231,22 @@ export class DraughtsboardState extends ChessboardState
     {
       return ~~((f * 2) / this.#columns)
     }
+  }
+
+  f2rc(f)
+  {
+    f = f - 1
+
+    if ((f < 0) || (f > (this.getMaxField() - 1)))
+    {
+      return -1
+    }
+
+    let d = half(this.#columns)
+
+    let r = ~~((f * 2) / this.#columns)
+    let c = 1 - (~~(f / d) % 2) + (2 * (f % d))
+    return [r, c]
   }
 
   // 0 = Bottom left
