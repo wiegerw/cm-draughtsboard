@@ -924,3 +924,19 @@ export class MoveGenerator
     return 1 + (r * half(this.#columns)) + half(c)
   }
 }
+
+export function findMove(bs, moveGenerator, destPos)
+{
+  let moves = moveGenerator.generateMoves(bs)
+  for (const m of moves)
+  {
+    bs.moveForward(m)
+    let pos = bs.getPosition()
+    bs.moveBackward(m)
+    if (pos === destPos)
+    {
+      return m
+    }
+  }
+  return undefined
+}

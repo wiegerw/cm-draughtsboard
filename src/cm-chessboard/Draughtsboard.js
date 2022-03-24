@@ -9,7 +9,8 @@
  */
 
 import {DraughtsboardView} from "./DraughtsboardView.js"
-import {DraughtsboardState, pieceTypeToPiece} from "./DraughtsboardState.js"
+import {DraughtsboardState, PIECE_TYPE, pieceTypeToPiece} from "./DraughtsboardState.js"
+import {findMove} from "./Draughts";
 import {COLOR, SQUARE_SELECT_TYPE, BORDER_TYPE, MARKER_TYPE} from "./Chessboard.js";
 
 export const FEN_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........oooooooooooooooooooo"
@@ -133,6 +134,29 @@ export class Draughtsboard {
         let indexFrom = this.f2index(from)
         let indexTo = this.f2index(to)
         return this.#movePieceIndex(indexFrom, indexTo)
+    }
+
+    moveToPosition(moveGenerator, destPos)
+    {
+        let m = findMove(this.state, moveGenerator, destPos)
+        if (m !== undefined)
+        {
+            if (m.isCapture())
+            {
+                for (let i = 0; i < m.getFieldCount() - 1; i++)
+                {
+                    this.movePiece(m.getField(i), m.GetField(i + 1))
+                }
+                for (let i = 0; i < m.getCaptureCount(); i++)
+                {
+                    this.setPiece(m.getCapturedField(i), PIECE_TYPE.empty)
+                }
+            }
+            else
+            {
+                this.setPosition(destPos)
+            }
+        }
     }
 
     setPosition(fen, animated = true) {
