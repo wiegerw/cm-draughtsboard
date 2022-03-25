@@ -145,9 +145,19 @@ export class Move
     return this.#capturedField[i]
   }
 
+  getCapturedFields()
+  {
+    return this.#capturedField
+  }
+
   getCapturedPiece(i)
   {
     return this.#capturedPiece[i]
+  }
+
+  getCapturedPieces()
+  {
+    return this.#capturedPiece
   }
 
   getEndField()
@@ -249,6 +259,7 @@ export class Move
 
   setCapturedFields(bs)
   {
+    console.log('setCapturedFields ' + this.#field)
     if (this.#field.length === 0)
     {
       return
@@ -257,7 +268,8 @@ export class Move
     this.#beginPiece = bs.getPieceFromField(this.getBeginField())
     console.assert(this.#beginPiece !== PIECE_TYPE.empty)
 
-    let endPiece = this.computeEndPiece(this.#beginPiece, this.getEndField(), bs);
+    this.#endPiece = this.computeEndPiece(this.#beginPiece, this.getEndField(), bs)
+    console.log('endpiece: ' + this.getEndField() + ' ' + this.#endPiece)
 
     let n = this.#field.length - 1 // maximum #captures
     let noCaptures = 0
@@ -304,6 +316,7 @@ export class Move
           noCaptures++
           this.#capturedField[i] = f
           this.#capturedPiece[i] = p
+          console.log('capture ' + f + ' ' + p)
           break
         }
 
@@ -322,12 +335,12 @@ export class Move
   {
     let d = half(bs.getColumns())
 
-    if ((piece === PIECE_TYPE.whitePiece) && (this.#field <= d))
+    if ((piece === PIECE_TYPE.whitePiece) && (field <= d))
     {
       return PIECE_TYPE.whiteKing
     }
 
-    if ((piece === PIECE_TYPE.blackPiece) && (this.#field >= (bs.getMaxField() - d + 1)))
+    if ((piece === PIECE_TYPE.blackPiece) && (field >= (bs.getMaxField() - d + 1)))
     {
       return PIECE_TYPE.blackKing
     }
@@ -544,6 +557,7 @@ export class MoveGenerator
   #columns
   #position
   #whiteToMove
+  #isCaptured
   
   constructor(longMoves = true, backwardsCapture = true, promoteDuringCapture = false, frysianMoves = false, moveFilter = new MoveFilterMaximumCapture())
   {
@@ -564,6 +578,7 @@ export class MoveGenerator
     this.#illegalMoves = []
     this.#field = []
     this.#capturedField = []
+    this.#isCaptured = []
   }
 
   #reset()
@@ -623,6 +638,7 @@ export class MoveGenerator
     this.#columns = bs.getColumns()
     this.#whiteToMove = bs.isWhiteToMove()
     this.#position = bs.getPieces()
+    this.#isCaptured = Array(bs.getMaxField()).fill(false)
 
     if (this.#whiteToMove)
     {
@@ -724,6 +740,10 @@ export class MoveGenerator
 
   isEnemy(f)
   {
+    if (this.#isCaptured[f])
+    {
+      return false
+    }
     if (this.#whiteToMove)
     {
       return ((this.#position[f] === PIECE_TYPE.blackPiece) || (this.#position[f] === PIECE_TYPE.blackKing))
@@ -773,9 +793,9 @@ export class MoveGenerator
       {
         foundCaptures = true
         this.#capturedField.push(fbetween)
-        this.#position[fbetween] += 100; // mark fbetween as captured
+        this.#isCaptured[fbetween] = true
         this.#doKingCaptures(row, col)
-        this.#position[fbetween] -= 100; // unmark fbetween as captured
+        this.#isCaptured[fbetween] = false
         this.#capturedField.pop()
         if (!this.#longMoves)
         {
@@ -853,7 +873,7 @@ export class MoveGenerator
       {
         foundCaptures = true
         this.#capturedField.push(fbetween)
-        this.#position[fbetween] += 100; // mark fbetween as captured
+        this.#isCaptured[fbetween] = true
         if (this.#promoteDuringCapture && this.isKingField(f))
         {
           this.#doKingCaptures(row, col)
@@ -862,7 +882,7 @@ export class MoveGenerator
         {
           this.#doPieceCaptures(row, col)
         }
-        this.#position[fbetween] -= 100; // unmark fbetween as captured
+        this.#isCaptured[fbetween] = false
         this.#capturedField.pop()
       }
     }
@@ -930,9 +950,15 @@ export function findMove(bs, moveGenerator, destPos)
   let moves = moveGenerator.generateMoves(bs)
   for (const m of moves)
   {
+    console.log('pos0 ', bs.getPosition())
+    console.log('move = ' + m.getFullNotation())
+    console.log('captured fields = ' + m.getCapturedFields())
+    console.log('captured pieces = ' + m.getCapturedPieces())
     bs.moveForward(m)
     let pos = bs.getPosition()
     bs.moveBackward(m)
+    console.log('pos1 ', pos)
+    console.log('pos2 ', destPos)
     if (pos === destPos)
     {
       return m

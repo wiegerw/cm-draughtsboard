@@ -49,7 +49,7 @@ describe("TestDraughts", () => {
  .   .   .   .   .
 W`
     let moves = generateMoves(pos)
-    assert.true(equalArrays(moves, [ "22x31" ]))
+    assert.true(equalArrays(moves, [ "22x31", "22x31" ]))
   })
 
   it("position 3", () => {
@@ -84,6 +84,23 @@ B`
 W`
     let moves = generateMoves(pos)
     assert.true(equalArrays(moves, [ "22x10", "22x5 " ]))
+  })
+
+  it("position 5", () => {
+    let pos = `
+   .   .   .   .   .
+ .   .   .   .   .
+   .   .   .   .   .
+ x   .   .   .   .
+   o   o   .   .   .
+ x   .   .   .   .
+   .   .   o   .   .
+ .   .   .   .   .
+   .   .   o   .   .
+ .   .   .   o   .
+B`
+    let moves = generateMoves(pos)
+    assert.true(equalArrays(moves, [ "26x48" ]))
   })
 
 })

@@ -84,7 +84,20 @@ export class DraughtsboardState extends ChessboardState
 
   setPiece(index, piece)
   {
-    this.squares[index] = piece
+    console.log('setPiece ' + piece)
+    this.squares[index] = pieceTypeToPiece(piece)
+  }
+
+  f2index(f)
+  {
+    const [row, column] = this.f2rc(f)
+    return (this.getRows() - row - 1) * this.getColumns() + column
+  }
+
+  setPieceField(f, piece)
+  {
+    console.log('I ' + f + ' -> ' + this.f2index(f) + ' ' + piece)
+    this.setPiece(this.f2index(f), piece)
   }
 
   getPieceFromField(f)
@@ -332,7 +345,7 @@ export class DraughtsboardState extends ChessboardState
       const pos = this.index2pos(i);
       pieces[i] = pieceToChar(this.squares[pos])
     }
-    return pieces.join("")
+    return pieces.join("") + (this.isWhiteToMove() ? "W" : "B")
   }
 
   switchPlayer()
@@ -346,12 +359,12 @@ export class DraughtsboardState extends ChessboardState
     {
       return
     }
-    this.setPiece(m.getEndField(), PIECE_TYPE.empty);
+    this.setPieceField(m.getEndField(), PIECE_TYPE.empty);
     for (let i = 0; i < m.getCaptureCount(); i++)
     {
-      this.setPiece(m.getCapturedField(i), m.getCapturedPiece(i))
+      this.setPieceField(m.getCapturedField(i), m.getCapturedPiece(i))
     }
-    this.setPiece(m.getBeginField(), m.beginPiece)
+    this.setPieceField(m.getBeginField(), m.beginPiece)
     this.switchPlayer()
   }
 
@@ -361,12 +374,16 @@ export class DraughtsboardState extends ChessboardState
     {
       return
     }
-    this.setPiece(m.getBeginField(), PIECE_TYPE.empty)
+    this.setPieceField(m.getBeginField(), PIECE_TYPE.empty)
+    console.log('set begin ' + m.getBeginField() + ' to ' + PIECE_TYPE.empty)
     for (let i = 0; i < m.getCaptureCount(); i++)
     {
-      this.setPiece(m.getCapturedField(i), PIECE_TYPE.empty)
+      this.setPieceField(m.getCapturedField(i), PIECE_TYPE.empty)
+      console.log('set captured ' + m.getCapturedField(i) + ' to ' + PIECE_TYPE.empty)
     }
-    this.setPiece(m.getEndField(), m.getEndPiece())
+    this.setPieceField(m.getEndField(), m.getEndPiece())
+    console.log('set end ' + m.getEndField() + ' to ' + m.getEndPiece())
     this.switchPlayer()
+    console.log('DONE ' + this.getPosition())
   }
 }
