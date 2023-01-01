@@ -29,7 +29,7 @@ export class BoardView {
         this.rows = board.state.rows
         this.columns = board.state.columns
         this.moveInput = new BoardMoveInput(this,
-            this.moveStartCallback.bind(this),
+            this.moveInputStartedCallback.bind(this),
             this.moveDoneCallback.bind(this),
             this.moveCanceledCallback.bind(this)
         )
@@ -461,6 +461,7 @@ export class BoardView {
         }
         this.board.state.inputEnabled = true
         this.moveInputCallback = eventHandler
+        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: true, color: color})
         this.visualizeInputState()
     }
 
@@ -469,21 +470,27 @@ export class BoardView {
         this.board.state.inputBlackEnabled = false
         this.board.state.inputEnabled = false
         this.moveInputCallback = undefined
+        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: false})
         this.visualizeInputState()
     }
 
     // callbacks //
 
-    moveStartCallback(index) {
-        if (this.moveInputCallback) {
-            return this.moveInputCallback({
-                board: this.board,
-                type: INPUT_EVENT_TYPE.moveStart,
-                square: SQUARE_COORDINATES[index]
-            })
-        } else {
-            return true
+    moveInputStartedCallback(index) {
+        const data = {
+            board: this.board,
+            type: INPUT_EVENT_TYPE.moveStart,
+            square: SQUARE_COORDINATES[index],
+            piece: this.board.getPiece(index)
         }
+        if (this.moveInputCallback) {
+            // the "oldschool" move input validator
+            data.moveInputCallbackResult =  this.moveInputCallback(data)
+        }
+        // the new extension points
+        const extensionPointsResult = this.chessboard.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        // validates, when moveInputCallbackResult and extensionPointsResult are true
+        return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
     moveDoneCallback(fromIndex, toIndex) {
