@@ -49,15 +49,13 @@ export class BoardView {
         }
 
         this.pointerDownListener = this.pointerDownHandler.bind(this)
-        this.board.context.addEventListener("mousedown", this.pointerDownListener)
-        this.board.context.addEventListener("touchstart", this.pointerDownListener)
+        this.context.addEventListener("mousedown", this.pointerDownListener)
+        this.context.addEventListener("touchstart", this.pointerDownListener)
 
         this.createSvgAndGroups()
         this.updateMetrics()
         callbackAfterCreation(this)
-        //if (board.props.responsive) {
-            this.handleResize()
-        //}
+        this.handleResize()
         this.redrawBoard()
 
         // animations
@@ -125,16 +123,20 @@ export class BoardView {
         this.svg = Svg.createSvg(this.board.context)
         let cssClass = this.board.props.style.cssClass ? this.board.props.style.cssClass : "default"
         this.svg.setAttribute("class", "cm-chessboard border-type-" + this.board.props.style.borderType + " " + cssClass)
+        this.svg.setAttribute("role", "img")
         this.updateMetrics()
         this.boardGroup = Svg.addElement(this.svg, "g", {class: "board"})
         this.coordinatesGroup = Svg.addElement(this.svg, "g", {class: "coordinates"})
-        this.markersGroup = Svg.addElement(this.svg, "g", {class: "markers"})
-        this.piecesGroup = Svg.addElement(this.svg, "g", {class: "pieces"})
+        this.markersLayer = Svg.addElement(this.svg, "g", {class: "markers-layer"})
+        this.markersGroup = Svg.addElement(this.markersLayer, "g", {class: "markers"})
+        this.piecesLayer = Svg.addElement(this.svg, "g", {class: "pieces-layer"})
+        this.piecesGroup = Svg.addElement(this.piecesLayer, "g", {class: "pieces"})
+        this.markersTopLayer = Svg.addElement(this.svg, "g", {class: "markers-top-layer"})
     }
 
     updateMetrics() {
-        this.width = this.board.context.clientWidth
-        this.height = this.board.context.clientHeight
+        this.width = this.context.clientWidth
+        this.height = this.context.clientWidth * (this.board.props.style.aspectRatio || 1)
         if (this.board.props.style.borderType === BORDER_TYPE.frame) {
             this.borderSize = this.width / 25
         } else if (this.board.props.style.borderType === BORDER_TYPE.thin) {
