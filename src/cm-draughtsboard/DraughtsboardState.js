@@ -17,7 +17,7 @@ export class DraughtsboardState {
         this.flipped = false
 
         // The array this.squares contains strings that correspond to svg-images.
-        // Possible values are 'wr', 'wn', 'wk', 'wb', 'wp', etc.
+        // Possible values are 'wp', 'wk', 'bp', 'bk'
         this.squares = new Array(this.rows * this.columns).fill(undefined)
         this.orientation = undefined
         this.markers = []
@@ -56,25 +56,6 @@ export class DraughtsboardState {
         }
     }
 
-    is_empty_field(r, c)
-    {
-        if (this.type_number === 30) // Turkish draughts
-        {
-            return false;
-        }
-        else
-        {
-            if (this.flipped)
-            {
-                return (this.invert_flag === 0) === (r % 2 === (this.columns - c) % 2);
-            }
-            else
-            {
-                return (this.invert_flag === 0) === ((this.rows - r) % 2 === c % 2);
-            }
-        }
-    }
-
     is_non_playing_field(r, c)
     {
         if (this.type_number === 30) // Turkish draughts
@@ -96,7 +77,7 @@ export class DraughtsboardState {
 
     is_player_field(r, c)
     {
-        if (this.is_empty_field(r, c))
+        if (this.is_non_playing_field(r, c))
         {
             return false;
         }
@@ -116,7 +97,7 @@ export class DraughtsboardState {
 
     is_opponent_field(r, c)
     {
-        if (this.is_empty_field(r, c))
+        if (this.is_non_playing_field(r, c))
         {
             return false;
         }
