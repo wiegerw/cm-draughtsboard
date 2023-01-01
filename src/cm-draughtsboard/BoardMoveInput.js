@@ -28,10 +28,10 @@ const DRAG_THRESHOLD = 4
 
 export class BoardMoveInput {
 
-    constructor(view, moveStartCallback, moveDoneCallback, moveCanceledCallback) {
+    constructor(view, moveInputStartedCallback, moveDoneCallback, moveCanceledCallback) {
         this.view = view
         this.board = view.board
-        this.moveStartCallback = moveStartCallback
+        this.moveInputStartedCallback = moveInputStartedCallback
         this.moveDoneCallback = moveDoneCallback
         this.moveCanceledCallback = moveCanceledCallback
         this.setMoveInputState(STATE.waitForInputStart)
@@ -233,7 +233,7 @@ export class BoardMoveInput {
                     } else if (e.type === "touchstart") {
                         point = {x: e.touches[0].clientX, y: e.touches[0].clientY}
                     }
-                    if (this.moveInputState === STATE.waitForInputStart && pieceName && this.moveStartCallback(index)) {
+                    if (this.moveInputState === STATE.waitForInputStart && pieceName && this.moveInputStartedCallback(index)) {
                         this.setMoveInputState(STATE.pieceClickedThreshold, {
                             index: index,
                             piece: pieceName,
@@ -255,7 +255,7 @@ export class BoardMoveInput {
                             const startPieceColor = startPieceName ? startPieceName.substr(0, 1) : undefined
                             if (color && startPieceColor === pieceColor) { // https://github.com/shaack/cm-chessboard/issues/40
                                 this.moveCanceledCallback(MOVE_CANCELED_REASON.clickedAnother, index)
-                                if (this.moveStartCallback(index)) {
+                                if (this.moveInputStartedCallback(index)) {
                                     this.setMoveInputState(STATE.pieceClickedThreshold, {
                                         index: index,
                                         piece: pieceName,
