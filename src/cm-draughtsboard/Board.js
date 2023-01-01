@@ -42,11 +42,11 @@ export const FEN_EMPTY_POSITION = ".............................................
 
 export class Board {
 
-    constructor(element, props = {}) {
-        if (!element) {
-            throw new Error("container element is " + element)
+    constructor(context, props = {}) {
+        if (!context) {
+            throw new Error("container context is " + context)
         }
-        this.element = element
+        this.context = context
         let defaultProps = {
             position: DRAUGHTS.empty,
             orientation: COLOR.white, // white on bottom
@@ -58,7 +58,7 @@ export class Board {
                 moveFromMarker: MARKER_TYPE.frame, // the marker used to mark the start square
                 moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
             },
-            responsive: true, // resizes the board based on element size
+            responsive: true, // resizes the board based on context size
             animationDuration: 300, // pieces animation duration in milliseconds
             sprite: {
                 url: "./assets/images/draughtsboard-sprite.svg", // pieces and markers are stored as svg sprite
@@ -78,7 +78,7 @@ export class Board {
             Object.assign(this.props.style, props.style)
         }
         if (this.props.style.aspectRatio) {
-            this.element.style.height = (this.element.offsetWidth * this.props.style.aspectRatio) + "px"
+            this.context.style.height = (this.context.offsetWidth * this.props.style.aspectRatio) + "px"
         }
         this.state = new DraughtsboardState()
         this.state.orientation = this.props.orientation
@@ -91,7 +91,7 @@ export class Board {
             } else {
                 this.state.setPosition(this.props.position)
             }
-            view.redraw()
+            view.redrawBoard()
         })
     }
 
@@ -99,7 +99,7 @@ export class Board {
 
     setPiece(square, piece) {
         this.state.setPiece(this.state.squareToIndex(square), piece)
-        this.view.drawPieces(this.state.squares)
+        this.view.redrawPieces(this.state.squares)
     }
 
     getPiece(square) {
@@ -125,7 +125,7 @@ export class Board {
                         resolve()
                     })
                 } else {
-                    this.view.drawPieces(this.state.squares)
+                    this.view.redrawPieces(this.state.squares)
                     resolve()
                 }
             } else {
@@ -165,7 +165,7 @@ export class Board {
 
     setOrientation(color) {
         this.state.orientation = color
-        return this.view.redraw()
+        return this.view.redrawBoard()
     }
 
     getOrientation() {
@@ -177,9 +177,9 @@ export class Board {
         this.view = undefined
         this.state = undefined
         if (this.squareSelectListener) {
-            this.element.removeEventListener("contextmenu", this.squareSelectListener)
-            this.element.removeEventListener("mouseup", this.squareSelectListener)
-            this.element.removeEventListener("touchend", this.squareSelectListener)
+            this.context.removeEventListener("contextmenu", this.squareSelectListener)
+            this.context.removeEventListener("mouseup", this.squareSelectListener)
+            this.context.removeEventListener("touchend", this.squareSelectListener)
         }
     }
 
@@ -210,20 +210,20 @@ export class Board {
                 index: index
             })
         }
-        this.element.addEventListener("contextmenu", this.squareSelectListener)
-        this.element.addEventListener("mouseup", this.squareSelectListener)
-        this.element.addEventListener("touchend", this.squareSelectListener)
+        this.context.addEventListener("contextmenu", this.squareSelectListener)
+        this.context.addEventListener("mouseup", this.squareSelectListener)
+        this.context.addEventListener("touchend", this.squareSelectListener)
         this.state.squareSelectEnabled = true
-        this.view.setCursor()
+        this.view.visualizeInputState()
     }
 
     disableSquareSelect() {
-        this.element.removeEventListener("contextmenu", this.squareSelectListener)
-        this.element.removeEventListener("mouseup", this.squareSelectListener)
-        this.element.removeEventListener("touchend", this.squareSelectListener)
+        this.context.removeEventListener("contextmenu", this.squareSelectListener)
+        this.context.removeEventListener("mouseup", this.squareSelectListener)
+        this.context.removeEventListener("touchend", this.squareSelectListener)
         this.squareSelectListener = undefined
         this.state.squareSelectEnabled = false
-        this.view.setCursor()
+        this.view.visualizeInputState()
     }
 
 }
