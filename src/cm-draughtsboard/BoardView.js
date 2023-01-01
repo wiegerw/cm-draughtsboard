@@ -117,10 +117,7 @@ export class BoardView {
     }
 
     createSvgAndGroups() {
-        if (this.svg) {
-            Svg.removeElement(this.svg)
-        }
-        this.svg = Svg.createSvg(this.board.context)
+        this.svg = Svg.createSvg(this.board.context) // TODO: use this.context
         let cssClass = this.board.props.style.cssClass ? this.board.props.style.cssClass : "default"
         this.svg.setAttribute("class", "cm-chessboard border-type-" + this.board.props.style.borderType + " " + cssClass)
         this.svg.setAttribute("role", "img")
