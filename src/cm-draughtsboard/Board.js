@@ -7,6 +7,12 @@
 import {BoardView} from "./BoardView.js"
 import {DraughtsboardState} from "./DraughtsboardState.js"
 
+export const DRAUGHTS_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........ooooooooooooooooooooW"
+export const DRAUGHTS_EMPTY_POSITION = "..................................................W"
+export const DRAUGHTS = {
+    start: DRAUGHTS_START_POSITION,
+    empty: DRAUGHTS_EMPTY_POSITION
+}
 export const COLOR = {
     white: "w",
     black: "b"
@@ -42,7 +48,7 @@ export class Board {
         }
         this.element = element
         let defaultProps = {
-            position: "empty", // set as fen, "start" or "empty"
+            position: DRAUGHTS.empty,
             orientation: COLOR.white, // white on bottom
             style: {
                 cssClass: "default",

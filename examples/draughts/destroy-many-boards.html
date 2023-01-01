@@ -29,13 +29,13 @@
 <h2>Stress Test: Create and destroy 5,000 responsive boards</h2>
 <div id="boards"></div>
 <script type="module">
-    import {Board, COLOR} from "../../src/cm-draughtsboard/Board.js"
+    import {Board, COLOR, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
     const boardsDiv = document.getElementById("boards")
     const boardDiv = document.createElement("div")
     boardDiv.setAttribute("class", "board1")
     boardsDiv.appendChild(boardDiv)
     new Board(boardDiv, {
-        position: "start",
+        position: DRAUGHTS.start,
         sprite: {url: "../../data/pieces"},
     })
 
@@ -45,7 +45,7 @@
             boardDiv.setAttribute("class", "board")
             boardsDiv.appendChild(boardDiv)
             const board = new Board(boardDiv, {
-                position: Math.round(Math.random()) ? "start" : "empty",
+                position: Math.round(Math.random()) ? DRAUGHTS.start : "empty",
                 orientation: Math.round(Math.random()) ? COLOR.white : COLOR.black,
                 sprite: {url: "../../data/pieces"},
                 style: { aspectRatio: undefined }
