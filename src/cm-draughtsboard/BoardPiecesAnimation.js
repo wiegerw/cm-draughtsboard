@@ -79,8 +79,8 @@ export class BoardPiecesAnimation {
             switch (change.type) {
                 case CHANGE_TYPE.move:
                     animatedItem.element = this.view.getPiece(change.atIndex)
-                    animatedItem.atPoint = this.view.squareIndexToPoint(change.atIndex)
-                    animatedItem.toPoint = this.view.squareIndexToPoint(change.toIndex)
+                    animatedItem.atPoint = this.view.indexToPoint(change.atIndex)
+                    animatedItem.toPoint = this.view.indexToPoint(change.toIndex)
                     break
                 case CHANGE_TYPE.appear:
                     animatedItem.element = this.view.drawPiece(change.atIndex, change.piece)

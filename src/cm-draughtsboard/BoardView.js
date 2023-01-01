@@ -199,7 +199,7 @@ export class BoardView {
             // const squareColor = ((9 * index) & 8) === 0 ? 'black' : 'white'
             const squareColor = (Math.floor(index / this.columns) % 2 === index % 2) ? 'black' : 'white'
             const fieldClass = `square ${squareColor}`
-            const point = this.squareIndexToPoint(index)
+            const point = this.indexToPoint(index)
             const squareRect = Svg.addElement(this.boardGroup, "rect", {
                 x: point.x, y: point.y, width: this.squareWidth, height: this.squareHeight
             })
@@ -342,7 +342,7 @@ export class BoardView {
         const pieceGroup = Svg.addElement(this.piecesGroup, "g")
         pieceGroup.setAttribute("data-piece", pieceName)
         pieceGroup.setAttribute("data-index", index)
-        const point = this.squareIndexToPoint(index)
+        const point = this.indexToPoint(index)
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         pieceGroup.transform.baseVal.appendItem(transform)
@@ -389,7 +389,7 @@ export class BoardView {
     drawMarker(marker) {
         const markerGroup = Svg.addElement(this.markersGroup, "g")
         markerGroup.setAttribute("data-index", marker.index)
-        const point = this.squareIndexToPoint(marker.index)
+        const point = this.indexToPoint(marker.index)
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         markerGroup.transform.baseVal.appendItem(transform)
@@ -508,7 +508,7 @@ export class BoardView {
         }
     }
 
-    squareIndexToPoint(index) {
+    indexToPoint(index) {
         let x, y
         if (this.board.state.orientation === COLOR.white) {
             x = this.borderSize + (index % this.columns) * this.squareWidth
