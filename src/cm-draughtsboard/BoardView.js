@@ -1,12 +1,16 @@
 /**
  * Author and copyright: Stefan Haack (https://shaack.com)
- * Repository: https://github.com/shaack/cm-chessboard
+ *                       Wieger Wesselink (https://10x10.org)
+ * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
 
+import {VisualMoveInput} from "../cm-chessboard/view/VisualMoveInput.js"
 import {BoardMoveInput} from "./BoardMoveInput.js"
 import {COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from "./Board.js"
 import {BoardPiecesAnimation} from "./BoardPiecesAnimation.js"
+import {EXTENSION_POINT} from "../cm-chessboard/model/Extension.js";
+import {Position} from "../cm-chessboard/model/Position.js";
 
 export const SQUARE_COORDINATES = [
     "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
@@ -22,8 +26,6 @@ export const SQUARE_COORDINATES = [
 export class BoardView {
 
     constructor(board, callbackAfterCreation) {
-        this.animationRunning = false
-        this.currentAnimation = undefined
         this.board = board
         this.rows = board.state.rows
         this.columns = board.state.columns
@@ -32,16 +34,15 @@ export class BoardView {
             this.moveDoneCallback.bind(this),
             this.moveCanceledCallback.bind(this)
         )
-        this.animationQueue = []
         this.loadSVGImages()
+        this.context = document.createElement("div")
+        this.board.context.appendChild(this.context)
         if (board.props.responsive) {
-            // noinspection JSUnresolvedVariable
             if (typeof ResizeObserver !== "undefined") {
-                // noinspection JSUnresolvedFunction
                 this.resizeObserver = new ResizeObserver(() => {
                     this.handleResize()
                 })
-                this.resizeObserver.observe(this.board.element)
+                this.resizeObserver.observe(this.board.context)
             } else {
                 this.resizeListener = this.handleResize.bind(this)
                 window.addEventListener("resize", this.resizeListener)
@@ -49,8 +50,8 @@ export class BoardView {
         }
 
         this.pointerDownListener = this.pointerDownHandler.bind(this)
-        this.board.element.addEventListener("mousedown", this.pointerDownListener)
-        this.board.element.addEventListener("touchstart", this.pointerDownListener)
+        this.board.context.addEventListener("mousedown", this.pointerDownListener)
+        this.board.context.addEventListener("touchstart", this.pointerDownListener)
 
         this.createSvgAndGroups()
         this.updateMetrics()
@@ -58,6 +59,12 @@ export class BoardView {
         if (board.props.responsive) {
             this.handleResize()
         }
+        this.redrawBoard()
+
+        // animations
+        this.animationQueue = []
+        this.animationRunning = false
+        this.currentAnimation = undefined
     }
 
     pointerDownHandler(e) {
@@ -67,13 +74,13 @@ export class BoardView {
     destroy() {
         this.moveInput.destroy()
         if (this.resizeObserver) {
-            this.resizeObserver.unobserve(this.board.element);
+            this.resizeObserver.unobserve(this.board.context);
         }
         if (this.resizeListener) {
             window.removeEventListener("resize", this.resizeListener)
         }
-        this.board.element.removeEventListener("mousedown", this.pointerDownListener)
-        this.board.element.removeEventListener("touchstart", this.pointerDownListener)
+        this.board.context.removeEventListener("mousedown", this.pointerDownListener)
+        this.board.context.removeEventListener("touchstart", this.pointerDownListener)
         Svg.removeElement(this.svg)
         this.animationQueue = []
         if (this.currentAnimation) {
@@ -116,7 +123,7 @@ export class BoardView {
         if (this.svg) {
             Svg.removeElement(this.svg)
         }
-        this.svg = Svg.createSvg(this.board.element)
+        this.svg = Svg.createSvg(this.board.context)
         let cssClass = this.board.props.style.cssClass ? this.board.props.style.cssClass : "default"
         this.svg.setAttribute("class", "cm-chessboard border-type-" + this.board.props.style.borderType + " " + cssClass)
         this.updateMetrics()
@@ -127,8 +134,8 @@ export class BoardView {
     }
 
     updateMetrics() {
-        this.width = this.board.element.clientWidth
-        this.height = this.board.element.clientHeight
+        this.width = this.board.context.clientWidth
+        this.height = this.board.context.clientHeight
         if (this.board.props.style.borderType === BORDER_TYPE.frame) {
             this.borderSize = this.width / 25
         } else if (this.board.props.style.borderType === BORDER_TYPE.thin) {
@@ -147,28 +154,30 @@ export class BoardView {
 
     handleResize() {
         if (this.board.props.style.aspectRatio) {
-            this.board.element.style.height = (this.board.element.clientWidth * this.board.props.style.aspectRatio) + "px"
+            this.board.context.style.height = (this.board.context.clientWidth * this.board.props.style.aspectRatio) + "px"
         }
-        if (this.board.element.clientWidth !== this.width ||
-            this.board.element.clientHeight !== this.height) {
+        if (this.board.context.clientWidth !== this.width ||
+            this.board.context.clientHeight !== this.height) {
             this.updateMetrics()
-            this.redraw()
+            this.redrawBoard()
         }
         this.svg.setAttribute("width", "100%") // safari bugfix
         this.svg.setAttribute("height", "100%")
     }
 
-    redraw() {
-        this.drawBoard()
+    redrawBoard() {
+        this.redrawSquares()
         this.drawCoordinatesDraughts()
         this.drawMarkers()
-        this.setCursor()
-        this.drawPieces(this.board.state.squares)
+        this.visualizeInputState()
+        this.redrawPieces()
+        // this.chessboard.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
+        // this.visualizeInputState()
     }
 
     // Board //
 
-    drawBoard() {
+    redrawSquares() {
         while (this.boardGroup.firstChild) {
             this.boardGroup.removeChild(this.boardGroup.lastChild)
         }
@@ -317,7 +326,7 @@ export class BoardView {
 
     // Pieces //
 
-    drawPieces(squares = this.board.state.squares) {
+    redrawPieces(squares = this.board.state.squares) {
         const childNodes = Array.from(this.piecesGroup.childNodes)
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {
@@ -412,7 +421,7 @@ export class BoardView {
             this.animationRunning = true
             this.currentAnimation = new BoardPiecesAnimation(this, nextAnimation.fromSquares, nextAnimation.toSquares, this.board.props.animationDuration / (this.animationQueue.length + 1), () => {
                 if (!this.moveInput.draggablePiece) {
-                    this.drawPieces(nextAnimation.toSquares)
+                    this.redrawPieces(nextAnimation.toSquares)
                     this.animationRunning = false
                     this.nextPieceAnimationInQueue()
                     if (nextAnimation.callback) {
@@ -442,7 +451,7 @@ export class BoardView {
         }
         this.board.state.inputEnabled = true
         this.moveInputCallback = eventHandler
-        this.setCursor()
+        this.visualizeInputState()
     }
 
     disableMoveInput() {
@@ -450,7 +459,7 @@ export class BoardView {
         this.board.state.inputBlackEnabled = false
         this.board.state.inputEnabled = false
         this.moveInputCallback = undefined
-        this.setCursor()
+        this.visualizeInputState()
     }
 
     // callbacks //
@@ -493,7 +502,7 @@ export class BoardView {
 
     // Helpers //
 
-    setCursor() {
+    visualizeInputState() {
         if (this.board.state) { // fix https://github.com/shaack/cm-chessboard/issues/47
             if (this.board.state.inputWhiteEnabled || this.board.state.inputBlackEnabled || this.board.state.squareSelectEnabled) {
                 this.boardGroup.setAttribute("class", "board input-enabled")
@@ -541,9 +550,10 @@ export class Svg {
      * @param parent
      * @param name
      * @param attributes
+     * @param sibling
      * @returns {Element}
      */
-    static addElement(parent, name, attributes) {
+    static addElement(parent, name, attributes, sibling = undefined) {
         let element = document.createElementNS(SVG_NAMESPACE, name)
         if (name === "use") {
             attributes["xlink:href"] = attributes["href"] // fix for safari
@@ -558,7 +568,11 @@ export class Svg {
                 }
             }
         }
+        if (sibling !== undefined) {
         parent.appendChild(element)
+        } else {
+          parent.insertBefore(element, sibling)
+        }
         return element
     }
 
@@ -567,7 +581,31 @@ export class Svg {
      * @param element
      */
     static removeElement(element) {
+        if(element.parentNode) {
         element.parentNode.removeChild(element)
+        } else {
+            console.warn(element, "without parentNode")
+        }
     }
 
+}
+
+export class DomUtils {
+    static delegate(element, eventName, selector, handler) {
+        const eventListener = function (event) {
+            let target = event.target
+            while (target && target !== this) {
+                if (target.matches(selector)) {
+                    handler.call(target, event)
+                }
+                target = target.parentNode
+            }
+        }
+        element.addEventListener(eventName, eventListener)
+        return {
+            remove: function () {
+                element.removeEventListener(eventName, eventListener)
+            }
+        }
+    }
 }
