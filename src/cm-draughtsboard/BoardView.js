@@ -5,7 +5,7 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {VisualMoveInput} from "../cm-chessboard/view/VisualMoveInput.js"
+import {VisualMoveInput} from "./VisualMoveInput.js"
 import {BoardMoveInput} from "./BoardMoveInput.js"
 import {COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from "./Board.js"
 import {BoardPiecesAnimation} from "./BoardPiecesAnimation.js"
@@ -96,7 +96,6 @@ export class BoardView {
         img.id = id;
         img.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', filename);
         document.body.appendChild(img);
-        console.log(id, img)
     }
 
     loadSVGImages() {
@@ -488,7 +487,7 @@ export class BoardView {
             data.moveInputCallbackResult =  this.moveInputCallback(data)
         }
         // the new extension points
-        const extensionPointsResult = this.chessboard.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        const extensionPointsResult = this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         // validates, when moveInputCallbackResult and extensionPointsResult are true
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
@@ -499,7 +498,7 @@ export class BoardView {
             type: INPUT_EVENT_TYPE.moveDone,
             squareFrom: SQUARE_COORDINATES[fromIndex],
             squareTo: SQUARE_COORDINATES[toIndex],
-            piece: this.chessboard.getPiece(fromIndex)
+            piece: this.board.getPiece(fromIndex)
         }
         if (this.moveInputCallback) {
             // the "oldschool" move input validator

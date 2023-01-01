@@ -5,6 +5,17 @@
  * License: MIT, see file 'LICENSE'
  */
 
+export function createTask() {
+    let resolve, reject
+    const promise = new Promise(function (_resolve, _reject) {
+        resolve = _resolve
+        reject = _reject
+    })
+    promise.resolve = resolve
+    promise.reject = reject
+    return promise
+}
+
 export class DraughtsboardState {
 
     constructor() {
