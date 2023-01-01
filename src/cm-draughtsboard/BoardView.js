@@ -6,21 +6,9 @@
  */
 
 import {VisualMoveInput} from "./VisualMoveInput.js"
-import {BoardMoveInput} from "./BoardMoveInput.js"
-import {COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from "./Board.js"
+import {BORDER_TYPE, COLOR, INPUT_EVENT_TYPE} from "./Board.js"
 import {BoardPiecesAnimation} from "./BoardPiecesAnimation.js"
-import {EXTENSION_POINT} from "../cm-chessboard/model/Extension.js"
-
-export const SQUARE_COORDINATES = [
-    "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
-    "a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2",
-    "a3", "b3", "c3", "d3", "e3", "f3", "g3", "h3",
-    "a4", "b4", "c4", "d4", "e4", "f4", "g4", "h4",
-    "a5", "b5", "c5", "d5", "e5", "f5", "g5", "h5",
-    "a6", "b6", "c6", "d6", "e6", "f6", "g6", "h6",
-    "a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7",
-    "a8", "b8", "c8", "d8", "e8", "f8", "g8", "h8"
-]
+import {EXTENSION_POINT} from "./Extension.js"
 
 export class BoardView {
 
@@ -28,7 +16,7 @@ export class BoardView {
         this.board = board
         this.rows = board.state.rows
         this.columns = board.state.columns
-        this.moveInput = new BoardMoveInput(this,
+        this.moveInput = new VisualMoveInput(this,
             this.moveInputStartedCallback.bind(this),
             this.validateMoveInputCallback.bind(this),
             this.moveInputCanceledCallback.bind(this)
@@ -167,7 +155,7 @@ export class BoardView {
         this.redrawSquares()
         this.drawCoordinatesDraughts()
         this.drawMarkers()
-        // this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
+        this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
         this.visualizeInputState()
         this.redrawPieces() // TODO: remove this
     }
@@ -359,10 +347,10 @@ export class BoardView {
         return pieceGroup
     }
 
-    drawPieceOnSquare(square, pieceName) {
-        const point = this.squareToPoint(square)
+    drawPieceOnSquare(index, pieceName) {
+        const point = this.indexToPoint(square)
         const pieceGroup = this.drawPiece(this.piecesGroup, pieceName, point)
-        pieceGroup.setAttribute("data-square", square)
+        pieceGroup.setAttribute("data-index", index)
         return pieceGroup
     }
 
@@ -479,7 +467,7 @@ export class BoardView {
         const data = {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveStart,
-            square: SQUARE_COORDINATES[index],
+            index: index,
             piece: this.board.getPiece(index)
         }
         if (this.moveInputCallback) {
@@ -496,8 +484,8 @@ export class BoardView {
         const data = {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveDone,
-            squareFrom: SQUARE_COORDINATES[fromIndex],
-            squareTo: SQUARE_COORDINATES[toIndex],
+            indexFrom: fromIndex,
+            indexTo: toIndex,
             piece: this.board.getPiece(fromIndex)
         }
         if (this.moveInputCallback) {
@@ -510,12 +498,13 @@ export class BoardView {
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
-    moveInputCanceledCallback(reason, index) { // TODO: use indexFrom + indexTo
+    moveInputCanceledCallback(reason, fromIndex, toIndex) {
         const data = {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveCanceled,
             reason: reason,
-            square: index ? SQUARE_COORDINATES[index] : undefined
+            indexFrom: fromIndex,
+            indexTo: toIndex,
         }
         this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         if (this.moveInputCallback) {

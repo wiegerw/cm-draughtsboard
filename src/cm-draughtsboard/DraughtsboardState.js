@@ -37,6 +37,8 @@ export class DraughtsboardState {
         this.inputBlackEnabled = false
         this.inputEnabled = false
         this.squareSelectEnabled = false
+        this.extensionPoints = {}
+        this.moveInputProcess = createTask().resolve()
     }
 
     setPiece(index, piece) {
@@ -212,4 +214,18 @@ export class DraughtsboardState {
         return this.columns * row + column
     }
 
+    invokeExtensionPoints(name, data = {}) {
+        const extensionPoints = this.extensionPoints[name]
+        const dataCloned = Object.assign({}, data)
+        dataCloned.extensionPoint = name
+        let returnValue = true
+        if (extensionPoints) {
+            for (const extensionPoint of extensionPoints) {
+                if(extensionPoint(dataCloned) === false) {
+                    returnValue = false
+                }
+            }
+        }
+        return returnValue
+    }
 }
