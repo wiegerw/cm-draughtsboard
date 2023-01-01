@@ -9,8 +9,7 @@ import {VisualMoveInput} from "../cm-chessboard/view/VisualMoveInput.js"
 import {BoardMoveInput} from "./BoardMoveInput.js"
 import {COLOR, INPUT_EVENT_TYPE, BORDER_TYPE} from "./Board.js"
 import {BoardPiecesAnimation} from "./BoardPiecesAnimation.js"
-import {EXTENSION_POINT} from "../cm-chessboard/model/Extension.js";
-import {Position} from "../cm-chessboard/model/Position.js";
+import {EXTENSION_POINT} from "../cm-chessboard/model/Extension.js"
 
 export const SQUARE_COORDINATES = [
     "a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1",
@@ -56,9 +55,9 @@ export class BoardView {
         this.createSvgAndGroups()
         this.updateMetrics()
         callbackAfterCreation(this)
-        if (board.props.responsive) {
+        //if (board.props.responsive) {
             this.handleResize()
-        }
+        //}
         this.redrawBoard()
 
         // animations
@@ -74,18 +73,18 @@ export class BoardView {
     destroy() {
         this.moveInput.destroy()
         if (this.resizeObserver) {
-            this.resizeObserver.unobserve(this.board.context);
+            this.resizeObserver.unobserve(this.board.context)
         }
         if (this.resizeListener) {
             window.removeEventListener("resize", this.resizeListener)
         }
         this.board.context.removeEventListener("mousedown", this.pointerDownListener)
         this.board.context.removeEventListener("touchstart", this.pointerDownListener)
-        Svg.removeElement(this.svg)
         this.animationQueue = []
         if (this.currentAnimation) {
             cancelAnimationFrame(this.currentAnimation.frameHandle)
         }
+        Svg.removeElement(this.svg)
     }
 
     // Sprite //
@@ -160,6 +159,7 @@ export class BoardView {
             this.board.context.clientHeight !== this.height) {
             this.updateMetrics()
             this.redrawBoard()
+            this.redrawPieces()
         }
         this.svg.setAttribute("width", "100%") // safari bugfix
         this.svg.setAttribute("height", "100%")
@@ -169,10 +169,9 @@ export class BoardView {
         this.redrawSquares()
         this.drawCoordinatesDraughts()
         this.drawMarkers()
+        // this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
         this.visualizeInputState()
-        this.redrawPieces()
-        // this.chessboard.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
-        // this.visualizeInputState()
+        this.redrawPieces() // TODO: remove this
     }
 
     // Board //
@@ -353,14 +352,12 @@ export class BoardView {
             href: `${spriteUrl}#${pieceName}`,
             class: "piece"
         })
-        // center on square
-        const transformTranslate = (this.svg.createSVGTransform())
-        transformTranslate.setTranslate(this.pieceXTranslate, 0)
-        pieceUse.transform.baseVal.appendItem(transformTranslate)
-        // scale
         const transformScale = (this.svg.createSVGTransform())
         transformScale.setScale(this.scalingY, this.scalingY)
         pieceUse.transform.baseVal.appendItem(transformScale)
+        const transformTranslate = (this.svg.createSVGTransform())
+        transformTranslate.setTranslate(this.pieceXTranslate, 0)
+        pieceUse.transform.baseVal.appendItem(transformTranslate)
         return pieceGroup
     }
 
