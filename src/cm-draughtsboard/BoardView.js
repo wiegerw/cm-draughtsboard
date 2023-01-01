@@ -360,18 +360,32 @@ export class BoardView {
         return pieceGroup
     }
 
+    drawPieceOnSquare(square, pieceName) {
+        const point = this.squareToPoint(square)
+        const pieceGroup = this.drawPiece(this.piecesGroup, pieceName, point)
+        pieceGroup.setAttribute("data-square", square)
+        return pieceGroup
+    }
+
     setPieceVisibility(index, visible = true) {
         const piece = this.getPiece(index)
-        if (visible) {
-            piece.setAttribute("visibility", "visible")
+        if(piece) {
+            if (visible) {
+                piece.setAttribute("visibility", "visible")
+            } else {
+                piece.setAttribute("visibility", "hidden")
+            }
         } else {
-            piece.setAttribute("visibility", "hidden")
+            console.warn("no piece on", square)
         }
-
     }
 
     getPiece(index) {
-        return this.piecesGroup.querySelector(`g[data-index='${index}']`)
+        const piece = this.piecesGroup.querySelector(`g[data-index='${index}']`)
+        if (!piece) {
+            console.warn("no piece on", square)
+        }
+        return piece
     }
 
     // Markers //
