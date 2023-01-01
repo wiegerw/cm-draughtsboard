@@ -13,15 +13,15 @@
 <div id="board"></div>
 <pre>
 new Board(document.getElementById("board"), {
-        position: "start",
+        position: DRAUGHTS.start,
         style: {aspectRatio: 0.9}
     })
 </pre>
 <script type="module">
-    import {Board} from "../../src/cm-draughtsboard/Board.js"
+    import {Board, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
 
     new Board(document.getElementById("board"), {
-        position: "start",
+        position: DRAUGHTS.start,
         sprite: {url: "../../data/pieces"},
         style: { aspectRatio: 0.9 }
     })
