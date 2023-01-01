@@ -28,12 +28,12 @@ const DRAG_THRESHOLD = 4
 
 export class BoardMoveInput {
 
-    constructor(view, moveInputStartedCallback, moveDoneCallback, moveCanceledCallback) {
+    constructor(view, moveInputStartedCallback, validateMoveInputCallback, moveInputCanceledCallback) {
         this.view = view
         this.board = view.board
         this.moveInputStartedCallback = moveInputStartedCallback
-        this.moveDoneCallback = moveDoneCallback
-        this.moveCanceledCallback = moveCanceledCallback
+        this.validateMoveInputCallback = validateMoveInputCallback
+        this.moveInputCanceledCallback = moveInputCanceledCallback
         this.setMoveInputState(STATE.waitForInputStart)
     }
 
@@ -137,7 +137,7 @@ export class BoardMoveInput {
                     throw new Error("moveInputState")
                 }
                 this.endIndex = params.index
-                if (this.endIndex && this.moveDoneCallback(this.startIndex, this.endIndex)) {
+                if (this.endIndex && this.validateMoveInputCallback(this.startIndex, this.endIndex)) {
                     const prevSquares = this.board.state.squares.slice(0)
                     this.board.state.setPiece(this.startIndex, undefined)
                     this.board.state.setPiece(this.endIndex, this.movedPiece)
@@ -254,7 +254,7 @@ export class BoardMoveInput {
                             const startPieceName = this.board.getPiece(SQUARE_COORDINATES[this.startIndex])
                             const startPieceColor = startPieceName ? startPieceName.substr(0, 1) : undefined
                             if (color && startPieceColor === pieceColor) { // https://github.com/shaack/cm-chessboard/issues/40
-                                this.moveCanceledCallback(MOVE_CANCELED_REASON.clickedAnother, index)
+                                this.moveInputCanceledCallback(MOVE_CANCELED_REASON.clickedAnother, index)
                                 if (this.moveInputStartedCallback(index)) {
                                     this.setMoveInputState(STATE.pieceClickedThreshold, {
                                         index: index,
@@ -339,7 +339,7 @@ export class BoardMoveInput {
                         if (this.moveInputState === STATE.clickDragTo) {
                             this.board.state.setPiece(this.startIndex, this.movedPiece)
                             this.view.setPieceVisibility(this.startIndex)
-                            this.moveCanceledCallback(MOVE_CANCELED_REASON.draggedBack, index)
+                            this.moveInputCanceledCallback(MOVE_CANCELED_REASON.draggedBack, index)
                             this.setMoveInputState(STATE.reset)
                         } else {
                             this.setMoveInputState(STATE.clickTo, {index: index})
@@ -351,12 +351,12 @@ export class BoardMoveInput {
                     this.setMoveInputState(STATE.clickTo, {index: index})
                 } else if (this.moveInputState === STATE.secondClickThreshold) {
                     this.setMoveInputState(STATE.reset)
-                    this.moveCanceledCallback(MOVE_CANCELED_REASON.secondClick, index)
+                    this.moveInputCanceledCallback(MOVE_CANCELED_REASON.secondClick, index)
                 }
             } else {
                 this.view.drawPieces()
                 this.setMoveInputState(STATE.reset)
-                this.moveCanceledCallback(MOVE_CANCELED_REASON.movedOutOfBoard, undefined)
+                this.moveInputCanceledCallback(MOVE_CANCELED_REASON.movedOutOfBoard, undefined)
             }
         } else {
             this.view.drawPieces()

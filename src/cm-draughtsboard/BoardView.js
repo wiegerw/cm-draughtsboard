@@ -30,8 +30,8 @@ export class BoardView {
         this.columns = board.state.columns
         this.moveInput = new BoardMoveInput(this,
             this.moveInputStartedCallback.bind(this),
-            this.moveDoneCallback.bind(this),
-            this.moveCanceledCallback.bind(this)
+            this.validateMoveInputCallback.bind(this),
+            this.moveInputCanceledCallback.bind(this)
         )
         this.loadSVGImages()
         this.context = document.createElement("div")
@@ -493,27 +493,34 @@ export class BoardView {
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
-    moveDoneCallback(fromIndex, toIndex) {
-        if (this.moveInputCallback) {
-            return this.moveInputCallback({
-                board: this.board,
-                type: INPUT_EVENT_TYPE.moveDone,
-                squareFrom: SQUARE_COORDINATES[fromIndex],
-                squareTo: SQUARE_COORDINATES[toIndex]
-            })
-        } else {
-            return true
+    validateMoveInputCallback(fromIndex, toIndex) {
+        const data = {
+            board: this.board,
+            type: INPUT_EVENT_TYPE.moveDone,
+            squareFrom: SQUARE_COORDINATES[fromIndex],
+            squareTo: SQUARE_COORDINATES[toIndex],
+            piece: this.chessboard.getPiece(fromIndex)
         }
+        if (this.moveInputCallback) {
+            // the "oldschool" move input validator
+            data.moveInputCallbackResult = this.moveInputCallback(data)
+        }
+        // the new extension points
+        const extensionPointsResult = this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        // validates, when moveInputCallbackResult and extensionPointsResult are true
+        return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
-    moveCanceledCallback(reason, index) {
+    moveInputCanceledCallback(reason, index) { // TODO: use indexFrom + indexTo
+        const data = {
+            board: this.board,
+            type: INPUT_EVENT_TYPE.moveCanceled,
+            reason: reason,
+            square: index ? SQUARE_COORDINATES[index] : undefined
+        }
+        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         if (this.moveInputCallback) {
-            this.moveInputCallback({
-                board: this.board,
-                type: INPUT_EVENT_TYPE.moveCanceled,
-                reason: reason,
-                square: index ? SQUARE_COORDINATES[index] : undefined
-            })
+            this.moveInputCallback(data)
         }
     }
 
