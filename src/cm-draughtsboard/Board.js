@@ -92,13 +92,13 @@ export class Board {
 
     // API //
 
-    setPiece(square, piece) {
-        this.state.setPiece(this.state.squareToIndex(square), piece)
+    setPiece(index, piece) {
+        this.state.setPiece(index, piece)
         this.view.redrawPieces(this.state.squares)
     }
 
-    getPiece(square) {
-        return this.state.squares[this.state.squareToIndex(square)]
+    getPiece(index) {
+        return this.state.squares[index]
     }
 
     setPosition(fen, animated = true) {
