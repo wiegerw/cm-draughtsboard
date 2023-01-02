@@ -372,7 +372,7 @@ export class BoardView {
     }
 
     setPieceVisibility(index, visible = true) {
-        const piece = this.getPiece(index)
+        const piece = this.getPieceElement(index)
         if(piece) {
             if (visible) {
                 piece.setAttribute("visibility", "visible")
@@ -384,7 +384,7 @@ export class BoardView {
         }
     }
 
-    getPiece(index) {
+    getPieceElement(index) {
         const piece = this.piecesGroup.querySelector(`g[data-index='${index}']`)
         if (!piece) {
             console.warn("no piece on", square)
