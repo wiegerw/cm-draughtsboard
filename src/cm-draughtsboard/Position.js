@@ -8,18 +8,21 @@
 // TODO: it seems to me that this should become a base class of BoardState
 export class Position {
 
-    // TODO: find out what animated is for (it seems to be unused in cm-chessboard)
     constructor(text = undefined, animated = false) {
         this.squares = undefined
         this.animated = animated
     }
 
-    // TODO: rename this function to setPosition
     setFen(fen ) {
+        throw new Error('Not implemented yet')
     }
 
-    // TODO: rename this function to getPosition
     getFen() {
+        throw new Error('Not implemented yet')
+    }
+
+    createPosition(text = undefined) {
+        throw new Error('Not implemented yet')
     }
 
     movePiece(indexFrom, indexTo) {
@@ -43,8 +46,5 @@ export class Position {
         const cloned = new Position()
         cloned.squares = this.squares.slice(0)
         return cloned
-    }
-
-    createEmptyPosition() {
     }
 }
