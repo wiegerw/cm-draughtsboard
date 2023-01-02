@@ -4,7 +4,7 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {Position} from "./Position.js"
+import {DraughtsPosition} from "./DraughtsPosition.js"
 
 export function createTask() {
     let resolve, reject
@@ -42,9 +42,20 @@ export class DraughtsboardState {
         this.moveInputProcess = createTask().resolve()
     }
 
-    setPosition(fen, animated = false) {
-        // this.position = new Position(fen, animated)
-        // TODO: implement this
+    setPosition(text, animated = false) {
+        this.position = new DraughtsPosition(fen, animated)
+        if (text) {
+            for (let i = 0; i < text.length; i++) {
+                let piece = undefined
+                switch(text[i]) {
+                    case 'x': piece = 'bp'; break;
+                    case 'X': piece = 'bq'; break;
+                    case 'o': piece = 'wp'; break;
+                    case 'O': piece = 'wq'; break;
+                }
+                this.squares[this.index2pos(i)] = piece
+            }
+        }
     }
 
     setPiece(index, piece) {
