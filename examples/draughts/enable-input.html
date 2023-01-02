@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>cm-draughtsboard</title>
+    <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
+    <link rel="stylesheet" href="../styles/examples.css"/>
+    <link rel="stylesheet" href="../../assets/styles/cm-chessboard.css"/>
+</head>
+<body>
+<h1><a href="../">cm-chessboard</a></h1>
+<h2>Example: Input enabled without validation</h2>
+<p>Input enabled on both sides, without move validation.</p>
+<div class="board" id="board"></div>
+<pre>
+const board = new Chessboard(document.getElementById("board"), {
+    position: FEN.start,
+    sprite: {url: "../assets/images/chessboard-sprite-staunty.svg"}
+})
+
+board.enableMoveInput(inputHandler)
+function inputHandler(event) {
+    switch (event.type) {
+        case INPUT_EVENT_TYPE.moveInputStarted:
+            log(`moveInputStarted: ${event.square}`)
+            return true
+        case INPUT_EVENT_TYPE.validateMoveInput:
+            log(`validateMoveInput: ${event.squareFrom}-${event.squareTo}`)
+            return true
+        case INPUT_EVENT_TYPE.moveInputCanceled:
+            log(`moveInputCanceled`)
+    }
+}
+</pre>
+<button style="margin-bottom: 10px"
+        onclick="window.board.setOrientation(window.board.getOrientation() === 'w' ? 'b' : 'w')">Switch Orientation
+</button>
+<div id="output" style="width: 100%; overflow: hidden"></div>
+<script type="module">
+    import {INPUT_EVENT_TYPE, Board} from "../../src/cm-draughtsboard/Board.js"
+    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js"
+
+    window.board = new Board(document.getElementById("board"), {
+        position: DRAUGHTS.start,
+        sprite: {url: "../../data/pieces"}
+    })
+
+    window.board.enableMoveInput(inputHandler)
+    function inputHandler(event) {
+        console.log(event)
+        switch (event.type) {
+            case INPUT_EVENT_TYPE.moveInputStarted:
+                log(`moveInputStarted: ${event.index}`)
+                return true
+            case INPUT_EVENT_TYPE.validateMoveInput:
+                log(`validateMoveInput: ${event.indexFrom}-${event.indexTo}`)
+                return true
+            case INPUT_EVENT_TYPE.moveInputCanceled:
+                log(`moveInputCanceled`)
+        }
+    }
+
+    const output = document.getElementById("output")
+
+    function log(text) {
+        const log = document.createElement("div")
+        log.innerText = text
+        output.appendChild(log)
+    }
+</script>
+</body>
+</html>

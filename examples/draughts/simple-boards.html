@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>cm-chessboard</title>
+    <title>cm-draughtsboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
     <link rel="stylesheet" href="../styles/examples.css"/>
     <link rel="stylesheet" href="../../assets/styles/cm-chessboard.css"/>
@@ -23,7 +23,8 @@ new Board(document.getElementById("board2"), {
 })
 </pre>
 <script type="module">
-    import {Board, COLOR, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
+    import {Board, COLOR} from "../../src/cm-draughtsboard/Board.js"
+    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
     new Board(document.getElementById("board1"), {
         position: DRAUGHTS.start,
