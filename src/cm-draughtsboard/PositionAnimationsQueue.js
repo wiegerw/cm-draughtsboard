@@ -3,7 +3,6 @@
  * Repository: https://github.com/shaack/cm-chessboard
  * License: MIT, see file 'LICENSE'
  */
-import {Position} from "./Position.js"
 import {Svg} from "./BoardView.js"
 
 /*
@@ -82,16 +81,27 @@ export class PositionsAnimation {
             this.duration = duration
             this.callback = callback
             this.frameHandle = requestAnimationFrame(this.animationStep.bind(this))
+            this.rows = fromPosition.rows
+            this.columns = fromPosition.columns
         } else {
             console.error("fromPosition", fromPosition, "toPosition", toPosition)
         }
     }
 
-    static seekChanges(fromSquares, toSquares) {
+    squareDistance(index1, index2) {
+        const column1 = index1 % this.columns
+        const row1 = Math.floor(index1 / this.columns)
+        const column2 = index2 % this.columns
+        const row2 = Math.floor(index2 / this.columns)
+        return Math.max(Math.abs(row2 - row1), Math.abs(column2 - column1))
+    }
+
+    seekChanges(fromIndices, toIndices) {
+        let N = this.rows * this.columns
         const appearedList = [], disappearedList = [], changes = []
-        for (let i = 0; i < 64; i++) {
-            const previousSquare = fromSquares[i]
-            const newSquare = toSquares[i]
+        for (let i = 0; i < N; i++) {
+            const previousSquare = fromIndices[i]
+            const newSquare = toIndices[i]
             if (newSquare !== previousSquare) {
                 if (newSquare) {
                     appearedList.push({piece: newSquare, index: i})
@@ -131,8 +141,8 @@ export class PositionsAnimation {
         return changes
     }
 
-    createAnimation(fromSquares, toSquares) {
-        const changes = PositionsAnimation.seekChanges(fromSquares, toSquares)
+    createAnimation(fromIndices, toIndices) {
+        const changes = this.seekChanges(fromIndices, toIndices)
         // console.log("changes", changes)
         const animatedElements = []
         changes.forEach((change) => {
@@ -207,15 +217,6 @@ export class PositionsAnimation {
             }
         })
     }
-
-    static squareDistance(index1, index2) {
-        const file1 = index1 % 8
-        const rank1 = Math.floor(index1 / 8)
-        const file2 = index2 % 8
-        const rank2 = Math.floor(index2 / 8)
-        return Math.max(Math.abs(rank2 - rank1), Math.abs(file2 - file1))
-    }
-
 }
 
 export class PositionAnimationsQueue extends PromiseQueue {
