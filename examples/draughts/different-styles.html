@@ -20,7 +20,8 @@
 <div class="board" id="board8"></div>
 <div class="board" id="board9"></div>
 <script type="module">
-    import {Board, BORDER_TYPE, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
+    import {Board, BORDER_TYPE} from "../../src/cm-draughtsboard/Board.js"
+    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
     new Board(document.getElementById("board1"), {
         position: DRAUGHTS.start,

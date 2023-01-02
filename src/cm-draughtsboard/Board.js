@@ -5,12 +5,11 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {BoardView} from "./BoardView.js"
 import {DraughtsboardState} from "./DraughtsboardState.js"
-import {DraughtsPosition} from "./DraughtsPosition.js"
-import {DRAUGHTS} from "./DraughtsPosition.js"  // TODO: remove this dependency
+import {DraughtsPosition, DRAUGHTS} from "./DraughtsPosition.js"
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
+import {BoardView} from "./BoardView.js"
 
 export const COLOR = {
     white: "w",
@@ -64,7 +63,7 @@ export class Board {
                 moveToMarker: MARKER_TYPE.frame, // the marker used to mark the square where the figure is moving to
             },
             sprite: {
-                url: "../data/pieces", // pieces and markers folder
+                url: "../data/pieces", // the folder where pieces and markers are stored
                 size: 40, // the sprite tiles size, defaults to 40x40px
                 cache: true // cache the sprite
             },

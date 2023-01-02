@@ -29,7 +29,8 @@
 <h2>Stress Test: Create and destroy 5,000 responsive boards</h2>
 <div id="boards"></div>
 <script type="module">
-    import {Board, COLOR, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
+    import {Board, COLOR} from "../../src/cm-draughtsboard/Board.js"
+    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
     const boardsDiv = document.getElementById("boards")
     const boardDiv = document.createElement("div")
     boardDiv.setAttribute("class", "board1")

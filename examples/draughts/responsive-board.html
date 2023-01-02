@@ -18,7 +18,8 @@ new Board(document.getElementById("board"), {
     })
 </pre>
 <script type="module">
-    import {Board, DRAUGHTS} from "../../src/cm-draughtsboard/Board.js"
+    import {Board} from "../../src/cm-draughtsboard/Board.js"
+    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
     new Board(document.getElementById("board"), {
         position: DRAUGHTS.start,
