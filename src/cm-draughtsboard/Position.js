@@ -43,4 +43,7 @@ export class Position {
         cloned.squares = this.squares.slice(0)
         return cloned
     }
+
+    createEmptyPosition() {
+    }
 }
