@@ -62,22 +62,22 @@ export class DraughtsboardState {
         }
     }
 
-    movePiece(fromSquare, toSquare, animated = false) {
+    movePiece(fromIndex, toIndex, animated = false) {
         const position = this._position.clone()
         position.animated = animated
-        const piece = position.getPiece(fromSquare)
+        const piece = position.getPiece(fromIndex)
         if (!piece) {
-            console.error("no piece on", fromSquare)
+            console.error("no piece on", fromIndex)
         }
-        position.setPiece(fromSquare, undefined)
-        position.setPiece(toSquare, piece)
+        position.setPiece(fromIndex, undefined)
+        position.setPiece(toIndex, piece)
         this._position = position
     }
 
     setPiece(index, piece, animated = false) {
         const position = this._position.clone()
         position.animated = animated
-        position.setPiece(square, piece)
+        position.setPiece(index, piece)
         this._position = position
 
         // TODO: remove the code below
@@ -262,9 +262,9 @@ export class DraughtsboardState {
     }
 
     // square is in alphanumeric format, e.g. 'b3'
-    squareToIndex(square) {
-        const column = square.substr(0, 1).charCodeAt(0) - 97
-        const row = square.substr(1, 1) - 1
-        return this.columns * row + column
-    }
+    // squareToIndex(square) {
+    //     const column = square.substr(0, 1).charCodeAt(0) - 97
+    //     const row = square.substr(1, 1) - 1
+    //     return this.columns * row + column
+    // }
 }
