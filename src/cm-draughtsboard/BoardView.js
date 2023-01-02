@@ -12,6 +12,7 @@ import {EXTENSION_POINT} from "./Extension.js"
 
 export class BoardView {
 
+    // TODO: remove callbackAfterCreation
     constructor(board, callbackAfterCreation) {
         this.board = board
         this.rows = board.state.rows
@@ -37,6 +38,7 @@ export class BoardView {
         }
 
         this.pointerDownListener = this.pointerDownHandler.bind(this)
+        this.pointerDownListener = this.pointerDownHandler.bind(this)  // TODO: remove this
         this.context.addEventListener("mousedown", this.pointerDownListener)
         this.context.addEventListener("touchstart", this.pointerDownListener)
 
@@ -440,7 +442,7 @@ export class BoardView {
     moveInputStartedCallback(index) {
         const data = {
             board: this.board,
-            type: INPUT_EVENT_TYPE.moveStart,
+            type: INPUT_EVENT_TYPE.moveInputStarted,
             index: index,
             piece: this.board.getPiece(index)
         }
@@ -454,13 +456,13 @@ export class BoardView {
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
-    validateMoveInputCallback(fromIndex, toIndex) {
+    validateMoveInputCallback(indexFrom, indexTo) {
         const data = {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveDone,
-            indexFrom: fromIndex,
-            indexTo: toIndex,
-            piece: this.board.getPiece(fromIndex)
+            indexFrom: indexFrom,
+            indexTo: indexTo,
+            piece: this.board.getPiece(indexFrom)
         }
         if (this.moveInputCallback) {
             // the "oldschool" move input validator
@@ -472,13 +474,13 @@ export class BoardView {
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
 
-    moveInputCanceledCallback(reason, fromIndex, toIndex) {
+    moveInputCanceledCallback(reason, indexFrom, indexTo) {
         const data = {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveCanceled,
             reason: reason,
-            indexFrom: fromIndex,
-            indexTo: toIndex,
+            indexFrom: indexFrom,
+            indexTo: indexTo
         }
         this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         if (this.moveInputCallback) {

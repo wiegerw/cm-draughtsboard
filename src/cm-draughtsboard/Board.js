@@ -201,7 +201,6 @@ export class Board {
             eventHandler({
                 board: this,
                 type: e.button === 2 ? SQUARE_SELECT_TYPE.secondary : SQUARE_SELECT_TYPE.primary,
-                // square: SQUARE_COORDINATES[index]
                 index: index
             })
         }
