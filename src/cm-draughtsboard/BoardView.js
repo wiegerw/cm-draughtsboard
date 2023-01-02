@@ -333,8 +333,7 @@ export class BoardView {
         for (let i = 0; i < N; i++) {
             const pieceName = squares[i]
             if (pieceName) {
-                // TODO: use drawPieceOnSquare
-                this.drawPiece(i, pieceName)
+                this.drawPieceOnSquare(i, pieceName)
             }
         }
         for (const childNode of childNodes) {
@@ -342,11 +341,12 @@ export class BoardView {
         }
     }
 
-    drawPiece(index, pieceName) {
-        const pieceGroup = Svg.addElement(this.piecesGroup, "g")
+    drawPiece(parentGroup, pieceName, point) {
+        const pieceGroup = Svg.addElement(parentGroup, "g", {})
+
         pieceGroup.setAttribute("data-piece", pieceName)
-        pieceGroup.setAttribute("data-index", index)
-        const point = this.indexToPoint(index)
+        pieceGroup.setAttribute("class", "piece-group")
+
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         pieceGroup.transform.baseVal.appendItem(transform)
@@ -365,7 +365,7 @@ export class BoardView {
     }
 
     drawPieceOnSquare(index, pieceName) {
-        const point = this.indexToPoint(square)
+        const point = this.indexToPoint(index)
         const pieceGroup = this.drawPiece(this.piecesGroup, pieceName, point)
         pieceGroup.setAttribute("data-index", index)
         return pieceGroup

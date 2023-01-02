@@ -83,7 +83,7 @@ export class BoardPiecesAnimation {
                     animatedItem.toPoint = this.view.indexToPoint(change.toIndex)
                     break
                 case CHANGE_TYPE.appear:
-                    animatedItem.element = this.view.drawPiece(change.atIndex, change.piece)
+                    animatedItem.element = this.view.drawPieceOnSquare(change.atIndex, change.piece)
                     animatedItem.element.style.opacity = 0
                     break
                 case CHANGE_TYPE.disappear:
