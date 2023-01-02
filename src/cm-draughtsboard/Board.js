@@ -6,13 +6,8 @@
 
 import {BoardView} from "./BoardView.js"
 import {DraughtsboardState} from "./DraughtsboardState.js"
+import {DRAUGHTS} from "./DraughtsPosition.js"  // TODO: remove this dependency
 
-export const DRAUGHTS_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........ooooooooooooooooooooW"
-export const DRAUGHTS_EMPTY_POSITION = "..................................................W"
-export const DRAUGHTS = {
-    start: DRAUGHTS_START_POSITION,
-    empty: DRAUGHTS_EMPTY_POSITION
-}
 export const COLOR = {
     white: "w",
     black: "b"

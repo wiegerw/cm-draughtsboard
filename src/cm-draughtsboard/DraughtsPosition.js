@@ -6,6 +6,13 @@
 
 import {Position} from "./Position.js"
 
+export const DRAUGHTS_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........ooooooooooooooooooooW"
+export const DRAUGHTS_EMPTY_POSITION = "..................................................W"
+export const DRAUGHTS = {
+    start: DRAUGHTS_START_POSITION,
+    empty: DRAUGHTS_EMPTY_POSITION
+}
+
 export class DraughtsPosition extends Position {
 
     constructor(fen = undefined, animated = false, rows = 10, columns = 10) {
@@ -72,5 +79,9 @@ export class DraughtsPosition extends Position {
         cloned.columns = this.columns
         cloned.squares = this.squares.slice(0)
         return cloned
+    }
+
+    createEmptyPosition() {
+        return DraughtsPosition(DRAUGHTS.empty)
     }
 }
