@@ -20,18 +20,7 @@ export function createTask() {
 export class DraughtsboardState {
 
     constructor() {
-        // PDN gametype attributes for international draughts
-        this.type_number = 20
-        this.rows = 10
-        this.columns = 10
-        this.notation_type = 'N'
-        this.notation_start = 2
-        this.invert_flag = 0
-        this.flipped = false
-
-        // The array this.squares contains strings that correspond to svg-images.
-        // Possible values are 'wp', 'wk', 'bp', 'bk'
-        this.squares = new Array(this.rows * this.columns).fill(undefined)
+        this.position = new DraughtsPosition()
         this.orientation = undefined
         this.markers = []
         this.inputWhiteEnabled = false
@@ -40,10 +29,25 @@ export class DraughtsboardState {
         this.squareSelectEnabled = false
         this.extensionPoints = {}
         this.moveInputProcess = createTask().resolve()
+
+        // PDN gametype attributes for international draughts
+        // TODO: set these attributes via the constructor
+        this.type_number = 20
+        this.rows = 10
+        this.columns = 10
+        this.notation_type = 'N'
+        this.notation_start = 2
+        this.invert_flag = 0
+        this.flipped = false
+
+        // TODO: remove the code below
+        this.squares = new Array(this.rows * this.columns).fill(undefined)
     }
 
     setPosition(text, animated = false) {
         this.position = new DraughtsPosition(fen, animated)
+
+        // TODO: remove the code below
         if (text) {
             for (let i = 0; i < text.length; i++) {
                 let piece = undefined
@@ -58,24 +62,30 @@ export class DraughtsboardState {
         }
     }
 
-    setPiece(index, piece) {
+    movePiece(fromSquare, toSquare, animated = false) {
+        const position = this._position.clone()
+        position.animated = animated
+        const piece = position.getPiece(fromSquare)
+        if (!piece) {
+            console.error("no piece on", fromSquare)
+        }
+        position.setPiece(fromSquare, undefined)
+        position.setPiece(toSquare, piece)
+        this._position = position
+    }
+
+    setPiece(index, piece, animated = false) {
+        const position = this._position.clone()
+        position.animated = animated
+        position.setPiece(square, piece)
+        this._position = position
+
+        // TODO: remove the code below
         this.squares[index] = piece
     }
 
     addMarker(index, type) {
         this.markers.push({index: index, type: type})
-    }
-
-    movePiece(fromIndex, toIndex, animated = false) {
-        // const position = this._position.clone()
-        // position.animated = animated
-        const piece = position.getPiece(fromIndex)
-        if (!piece) {
-            console.error("no piece on", fromIndex)
-        }
-        // position.setPiece(fromSquare, undefined)
-        // position.setPiece(toSquare, piece)
-        // this._position = position
     }
 
     removeMarkers(index = undefined, type = undefined) {
@@ -257,5 +267,4 @@ export class DraughtsboardState {
         const row = square.substr(1, 1) - 1
         return this.columns * row + column
     }
-
 }
