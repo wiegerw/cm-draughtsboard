@@ -46,6 +46,7 @@ export class BoardView {
         this.handleResize()
         this.redrawBoard()
 
+        // TODO: remove the code below
         // animations
         this.animationQueue = []
         this.animationRunning = false
@@ -105,8 +106,13 @@ export class BoardView {
 
     createSvgAndGroups() {
         this.svg = Svg.createSvg(this.board.context) // TODO: use this.context
+        // let description = document.createElement("description")
+        // description.innerText = "Chessboard"
+        // description.id = "svg-description"
+        // this.svg.appendChild(description)
         let cssClass = this.board.props.style.cssClass ? this.board.props.style.cssClass : "default"
         this.svg.setAttribute("class", "cm-chessboard border-type-" + this.board.props.style.borderType + " " + cssClass)
+        // this.svg.setAttribute("aria-describedby", "svg-description")
         this.svg.setAttribute("role", "img")
         this.updateMetrics()
         this.boardGroup = Svg.addElement(this.svg, "g", {class: "board"})
@@ -116,10 +122,12 @@ export class BoardView {
         this.piecesLayer = Svg.addElement(this.svg, "g", {class: "pieces-layer"})
         this.piecesGroup = Svg.addElement(this.piecesLayer, "g", {class: "pieces"})
         this.markersTopLayer = Svg.addElement(this.svg, "g", {class: "markers-top-layer"})
+        // this.markersTopGroup = Svg.addElement(this.markersTopLayer, "g", {class: "markers-top"})
     }
 
     updateMetrics() {
         this.width = this.context.clientWidth
+        // TODO: use this.height = this.context.clientWidth * (this.chessboard.props.style.aspectRatio || 1)
         this.height = this.context.clientWidth * (this.board.props.style.aspectRatio || 1)
         if (this.board.props.style.borderType === BORDER_TYPE.frame) {
             this.borderSize = this.width / 25
@@ -138,9 +146,13 @@ export class BoardView {
     }
 
     handleResize() {
+        // TODO: use this code:
+        // this.context.style.width = this.board.context.clientWidth + "px"
+        // this.context.style.height = (this.board.context.clientWidth * this.chessboard.props.style.aspectRatio) + "px"
         if (this.board.props.style.aspectRatio) {
             this.board.context.style.height = (this.board.context.clientWidth * this.board.props.style.aspectRatio) + "px"
         }
+
         if (this.board.context.clientWidth !== this.width ||
             this.board.context.clientHeight !== this.height) {
             this.updateMetrics()
@@ -157,7 +169,9 @@ export class BoardView {
         this.drawMarkers()
         this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
         this.visualizeInputState()
-        this.redrawPieces() // TODO: remove this
+
+        // TODO: remove the code below
+        this.redrawPieces()
     }
 
     // Board //
@@ -166,6 +180,8 @@ export class BoardView {
         while (this.boardGroup.firstChild) {
             this.boardGroup.removeChild(this.boardGroup.lastChild)
         }
+
+        // TODO: remove this condition
         if (this.board.props.style.borderType !== BORDER_TYPE.none) {
             let boardBorder = Svg.addElement(this.boardGroup, "rect", {width: this.width, height: this.height})
             boardBorder.setAttribute("class", "border")
@@ -183,7 +199,6 @@ export class BoardView {
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {
             const index = this.board.state.orientation === COLOR.white ? i : N - i - 1
-            // const squareColor = ((9 * index) & 8) === 0 ? 'black' : 'white'
             const squareColor = (Math.floor(index / this.columns) % 2 === index % 2) ? 'black' : 'white'
             const fieldClass = `square ${squareColor}`
             const point = this.indexToPoint(index)
@@ -311,12 +326,14 @@ export class BoardView {
 
     // Pieces //
 
+    // TODO: use this.board.state.position.squares
     redrawPieces(squares = this.board.state.squares) {
         const childNodes = Array.from(this.piecesGroup.childNodes)
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {
             const pieceName = squares[i]
             if (pieceName) {
+                // TODO: use drawPieceOnSquare
                 this.drawPiece(i, pieceName)
             }
         }
@@ -388,6 +405,7 @@ export class BoardView {
     }
 
     drawMarker(marker) {
+        // console.log("drawMarker", marker)
         const markerGroup = Svg.addElement(this.markersGroup, "g")
         markerGroup.setAttribute("data-index", marker.index)
         const point = this.indexToPoint(marker.index)
@@ -401,38 +419,6 @@ export class BoardView {
         transformScale.setScale(this.scalingX, this.scalingY)
         markerUse.transform.baseVal.appendItem(transformScale)
         return markerGroup
-    }
-
-    // animation queue //
-
-    animatePieces(fromSquares, toSquares, callback) {
-        this.animationQueue.push({fromSquares: fromSquares, toSquares: toSquares, callback: callback})
-        if (!this.animationRunning) {
-            this.nextPieceAnimationInQueue()
-        }
-    }
-
-    nextPieceAnimationInQueue() {
-        const nextAnimation = this.animationQueue.shift()
-        if (nextAnimation !== undefined) {
-            this.animationRunning = true
-            this.currentAnimation = new BoardPiecesAnimation(this, nextAnimation.fromSquares, nextAnimation.toSquares, this.board.props.animationDuration / (this.animationQueue.length + 1), () => {
-                if (!this.moveInput.draggablePiece) {
-                    this.redrawPieces(nextAnimation.toSquares)
-                    this.animationRunning = false
-                    this.nextPieceAnimationInQueue()
-                    if (nextAnimation.callback) {
-                        nextAnimation.callback()
-                    }
-                } else {
-                    this.animationRunning = false
-                    this.nextPieceAnimationInQueue()
-                    if (nextAnimation.callback) {
-                        nextAnimation.callback()
-                    }
-                }
-            })
-        }
     }
 
     // enable and disable move input //
@@ -536,6 +522,38 @@ export class BoardView {
         return {x: x, y: y}
     }
 
+    // TODO: remove the code below
+    // animation queue //
+
+    animatePieces(fromSquares, toSquares, callback) {
+        this.animationQueue.push({fromSquares: fromSquares, toSquares: toSquares, callback: callback})
+        if (!this.animationRunning) {
+            this.nextPieceAnimationInQueue()
+        }
+    }
+
+    nextPieceAnimationInQueue() {
+        const nextAnimation = this.animationQueue.shift()
+        if (nextAnimation !== undefined) {
+            this.animationRunning = true
+            this.currentAnimation = new BoardPiecesAnimation(this, nextAnimation.fromSquares, nextAnimation.toSquares, this.board.props.animationDuration / (this.animationQueue.length + 1), () => {
+                if (!this.moveInput.draggablePiece) {
+                    this.redrawPieces(nextAnimation.toSquares)
+                    this.animationRunning = false
+                    this.nextPieceAnimationInQueue()
+                    if (nextAnimation.callback) {
+                        nextAnimation.callback()
+                    }
+                } else {
+                    this.animationRunning = false
+                    this.nextPieceAnimationInQueue()
+                    if (nextAnimation.callback) {
+                        nextAnimation.callback()
+                    }
+                }
+            })
+        }
+    }
 }
 
 const SVG_NAMESPACE = "http://www.w3.org/2000/svg"
