@@ -105,7 +105,7 @@ export class BoardView {
     }
 
     createSvgAndGroups() {
-        this.svg = Svg.createSvg(this.board.context) // TODO: use this.context
+        this.svg = Svg.createSvg(this.context)
         // let description = document.createElement("description")
         // description.innerText = "Chessboard"
         // description.id = "svg-description"
@@ -146,13 +146,8 @@ export class BoardView {
     }
 
     handleResize() {
-        // TODO: use this code:
-        // this.context.style.width = this.board.context.clientWidth + "px"
-        // this.context.style.height = (this.board.context.clientWidth * this.chessboard.props.style.aspectRatio) + "px"
-        if (this.board.props.style.aspectRatio) {
-            this.board.context.style.height = (this.board.context.clientWidth * this.board.props.style.aspectRatio) + "px"
-        }
-
+        this.context.style.width = this.board.context.clientWidth + "px"
+        this.context.style.height = (this.board.context.clientWidth * this.board.props.style.aspectRatio) + "px"
         if (this.board.context.clientWidth !== this.width ||
             this.board.context.clientHeight !== this.height) {
             this.updateMetrics()
@@ -343,10 +338,8 @@ export class BoardView {
 
     drawPiece(parentGroup, pieceName, point) {
         const pieceGroup = Svg.addElement(parentGroup, "g", {})
-
         pieceGroup.setAttribute("data-piece", pieceName)
         pieceGroup.setAttribute("class", "piece-group")
-
         const transform = (this.svg.createSVGTransform())
         transform.setTranslate(point.x, point.y)
         pieceGroup.transform.baseVal.appendItem(transform)
