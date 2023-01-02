@@ -45,7 +45,7 @@ export class DraughtsboardState {
     }
 
     setPosition(text, animated = false) {
-        this.position = new DraughtsPosition(fen, animated)
+        this.position = new DraughtsPosition(text, animated)
 
         // TODO: remove the code below
         if (text) {
@@ -226,21 +226,6 @@ export class DraughtsboardState {
         else
         {
             return 'abcdefghijklmnop'[c] + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16][r];
-        }
-    }
-
-    setPosition(text) {
-        if (text) {
-            for (let i = 0; i < text.length; i++) {
-                let piece = undefined
-                switch(text[i]) {
-                    case 'x': piece = 'bp'; break;
-                    case 'X': piece = 'bq'; break;
-                    case 'o': piece = 'wp'; break;
-                    case 'O': piece = 'wq'; break;
-                }
-                this.squares[this.index2pos(i)] = piece
-            }
         }
     }
 
