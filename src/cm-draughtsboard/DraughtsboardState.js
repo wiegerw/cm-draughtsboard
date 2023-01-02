@@ -4,6 +4,7 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
+import {Position} from "./Position.js"
 
 export function createTask() {
     let resolve, reject
@@ -41,6 +42,11 @@ export class DraughtsboardState {
         this.moveInputProcess = createTask().resolve()
     }
 
+    setPosition(fen, animated = false) {
+        // this.position = new Position(fen, animated)
+        // TODO: implement this
+    }
+
     setPiece(index, piece) {
         this.squares[index] = piece
     }
@@ -49,12 +55,24 @@ export class DraughtsboardState {
         this.markers.push({index: index, type: type})
     }
 
+    movePiece(fromIndex, toIndex, animated = false) {
+        // const position = this._position.clone()
+        // position.animated = animated
+        const piece = position.getPiece(fromIndex)
+        if (!piece) {
+            console.error("no piece on", fromIndex)
+        }
+        // position.setPiece(fromSquare, undefined)
+        // position.setPiece(toSquare, piece)
+        // this._position = position
+    }
+
     removeMarkers(index = undefined, type = undefined) {
         if (!index && !type) {
             this.markers = []
         } else {
             this.markers = this.markers.filter((marker) => {
-                if (!marker.type) {
+                if (!type) {
                     if (index === marker.index) {
                         return false
                     }
@@ -68,6 +86,21 @@ export class DraughtsboardState {
                 return true
             })
         }
+    }
+
+    invokeExtensionPoints(name, data = {}) {
+        const extensionPoints = this.extensionPoints[name]
+        const dataCloned = Object.assign({}, data)
+        dataCloned.extensionPoint = name
+        let returnValue = true
+        if (extensionPoints) {
+            for (const extensionPoint of extensionPoints) {
+                if(extensionPoint(dataCloned) === false) {
+                    returnValue = false
+                }
+            }
+        }
+        return returnValue
     }
 
     is_non_playing_field(r, c)
@@ -214,18 +247,4 @@ export class DraughtsboardState {
         return this.columns * row + column
     }
 
-    invokeExtensionPoints(name, data = {}) {
-        const extensionPoints = this.extensionPoints[name]
-        const dataCloned = Object.assign({}, data)
-        dataCloned.extensionPoint = name
-        let returnValue = true
-        if (extensionPoints) {
-            for (const extensionPoint of extensionPoints) {
-                if(extensionPoint(dataCloned) === false) {
-                    returnValue = false
-                }
-            }
-        }
-        return returnValue
-    }
 }
