@@ -7,13 +7,11 @@
 
 import {VisualMoveInput} from "./VisualMoveInput.js"
 import {BORDER_TYPE, COLOR, INPUT_EVENT_TYPE} from "./Board.js"
-import {BoardPiecesAnimation} from "./BoardPiecesAnimation.js"
 import {EXTENSION_POINT} from "./Extension.js"
 
 export class BoardView {
 
-    // TODO: remove callbackAfterCreation
-    constructor(board, callbackAfterCreation) {
+    constructor(board) {
         this.board = board
         this.rows = board.state.rows
         this.columns = board.state.columns
@@ -44,15 +42,8 @@ export class BoardView {
 
         this.createSvgAndGroups()
         this.updateMetrics()
-        callbackAfterCreation(this)
         this.handleResize()
         this.redrawBoard()
-
-        // TODO: remove the code below
-        // animations
-        this.animationQueue = []
-        this.animationRunning = false
-        this.currentAnimation = undefined
     }
 
     pointerDownHandler(e) {
@@ -69,10 +60,6 @@ export class BoardView {
         }
         this.board.context.removeEventListener("mousedown", this.pointerDownListener)
         this.board.context.removeEventListener("touchstart", this.pointerDownListener)
-        this.animationQueue = []
-        if (this.currentAnimation) {
-            cancelAnimationFrame(this.currentAnimation.frameHandle)
-        }
         Svg.removeElement(this.svg)
     }
 
@@ -165,9 +152,6 @@ export class BoardView {
         this.drawMarkers()
         this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
         this.visualizeInputState()
-
-        // TODO: remove the code below
-        this.redrawPieces()
     }
 
     // Board //
@@ -510,39 +494,6 @@ export class BoardView {
             y = this.borderSize + (Math.floor(index / this.columns)) * this.squareHeight
         }
         return {x: x, y: y}
-    }
-
-    // TODO: remove the code below
-    // animation queue //
-
-    animatePieces(fromSquares, toSquares, callback) {
-        this.animationQueue.push({fromSquares: fromSquares, toSquares: toSquares, callback: callback})
-        if (!this.animationRunning) {
-            this.nextPieceAnimationInQueue()
-        }
-    }
-
-    nextPieceAnimationInQueue() {
-        const nextAnimation = this.animationQueue.shift()
-        if (nextAnimation !== undefined) {
-            this.animationRunning = true
-            this.currentAnimation = new BoardPiecesAnimation(this, nextAnimation.fromSquares, nextAnimation.toSquares, this.board.props.animationDuration / (this.animationQueue.length + 1), () => {
-                if (!this.moveInput.draggablePiece) {
-                    this.redrawPieces(nextAnimation.toSquares)
-                    this.animationRunning = false
-                    this.nextPieceAnimationInQueue()
-                    if (nextAnimation.callback) {
-                        nextAnimation.callback()
-                    }
-                } else {
-                    this.animationRunning = false
-                    this.nextPieceAnimationInQueue()
-                    if (nextAnimation.callback) {
-                        nextAnimation.callback()
-                    }
-                }
-            })
-        }
     }
 }
 
