@@ -5,17 +5,7 @@
  * License: MIT, see file 'LICENSE'
  */
 import {DraughtsPosition} from "./DraughtsPosition.js"
-
-export function createTask() {
-    let resolve, reject
-    const promise = new Promise(function (_resolve, _reject) {
-        resolve = _resolve
-        reject = _reject
-    })
-    promise.resolve = resolve
-    promise.reject = reject
-    return promise
-}
+import {createTask} from "./Position.js"
 
 export class DraughtsboardState {
 

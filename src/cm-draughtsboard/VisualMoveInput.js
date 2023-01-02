@@ -6,7 +6,7 @@
  */
 
 import {Svg} from "./BoardView.js"
-import {createTask} from "./DraughtsboardState.js"
+import {createTask} from "./Position.js"
 
 const STATE = {
     waitForInputStart: 0,
