@@ -15,12 +15,20 @@ export const DRAUGHTS = {
 
 export class DraughtsPosition extends Position {
 
-    constructor(fen = undefined, animated = false, rows = 10, columns = 10) {
-        super();
+    constructor(text = undefined, animated = false, rows = 10, columns = 10) {
+        super()
         this.rows = rows
         this.columns = columns
         this.squares = new Array(rows * columns).fill(undefined)
-        this.setFen(fen);
+        this.setFen(text)
+    }
+
+    // Converts an index in a position string like 'xxxxx...ooo' to an index in the squares array
+    index2pos(i) {
+        const d = this.columns / 2;
+        const row = Math.floor((2 * i) / this.columns);
+        const column = 2 * (i % d) + (i % this.columns < d ? 1 : 0);
+        return (this.rows - row - 1) * this.columns + column
     }
 
     setFen(text)
