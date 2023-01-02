@@ -20,10 +20,11 @@
 <div class="board" id="board8"></div>
 <div class="board" id="board9"></div>
 <script type="module">
-    import {Board, BORDER_TYPE} from "../../src/cm-draughtsboard/Board.js"
+    import {BORDER_TYPE} from "../../src/cm-draughtsboard/Board.js"
+    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
     import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
-    new Board(document.getElementById("board1"), {
+    new DraughtsBoard(document.getElementById("board1"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "green",
@@ -31,7 +32,7 @@
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board2"), {
+    new DraughtsBoard(document.getElementById("board2"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "chessboard-js",
@@ -39,7 +40,7 @@
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board3"), {
+    new DraughtsBoard(document.getElementById("board3"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "chess-club",
@@ -47,7 +48,7 @@
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board4"), {
+    new DraughtsBoard(document.getElementById("board4"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "blue",
@@ -56,14 +57,14 @@
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board5"), {
+    new DraughtsBoard(document.getElementById("board5"), {
         position: DRAUGHTS.start,
         style: {
             borderType: BORDER_TYPE.none
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board6"), {
+    new DraughtsBoard(document.getElementById("board6"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "blue",
@@ -71,21 +72,21 @@
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board7"), {
+    new DraughtsBoard(document.getElementById("board7"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "green"
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board8"), {
+    new DraughtsBoard(document.getElementById("board8"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "black-and-white"
         },
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board9"), {
+    new DraughtsBoard(document.getElementById("board9"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "chessboard-js",

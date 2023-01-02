@@ -252,7 +252,7 @@ export class PositionAnimationsQueue extends PromiseQueue {
 
     async enqueueTurnBoard(position, color, animated) {
         return super.enqueue(() => new Promise((resolve) => {
-            const emptyPosition = position.createEmptyPosition()
+            const emptyPosition = position.createPosition()
             let duration = animated ? this.board.props.animationDuration : 0
             if(this.queue.length > 0) {
                 duration = duration / (1 + Math.pow(this.queue.length / 5, 2))
