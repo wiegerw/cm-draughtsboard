@@ -127,7 +127,6 @@ export class BoardView {
 
     updateMetrics() {
         this.width = this.context.clientWidth
-        // TODO: use this.height = this.context.clientWidth * (this.chessboard.props.style.aspectRatio || 1)
         this.height = this.context.clientWidth * (this.board.props.style.aspectRatio || 1)
         if (this.board.props.style.borderType === BORDER_TYPE.frame) {
             this.borderSize = this.width / 25
@@ -176,20 +175,17 @@ export class BoardView {
             this.boardGroup.removeChild(this.boardGroup.lastChild)
         }
 
-        // TODO: remove this condition
-        if (this.board.props.style.borderType !== BORDER_TYPE.none) {
-            let boardBorder = Svg.addElement(this.boardGroup, "rect", {width: this.width, height: this.height})
-            boardBorder.setAttribute("class", "border")
-            if (this.board.props.style.borderType === BORDER_TYPE.frame) {
-                const innerPos = this.borderSize
-                let borderInner = Svg.addElement(this.boardGroup, "rect", {
-                    x: innerPos,
-                    y: innerPos,
-                    width: this.width - innerPos * 2,
-                    height: this.height - innerPos * 2
-                })
-                borderInner.setAttribute("class", "border-inner")
-            }
+        let boardBorder = Svg.addElement(this.boardGroup, "rect", {width: this.width, height: this.height})
+        boardBorder.setAttribute("class", "border")
+        if (this.board.props.style.borderType === BORDER_TYPE.frame) {
+            const innerPos = this.borderSize
+            let borderInner = Svg.addElement(this.boardGroup, "rect", {
+                x: innerPos,
+                y: innerPos,
+                width: this.width - innerPos * 2,
+                height: this.height - innerPos * 2
+            })
+            borderInner.setAttribute("class", "border-inner")
         }
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {
