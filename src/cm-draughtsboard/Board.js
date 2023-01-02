@@ -6,7 +6,6 @@
  */
 
 import {DraughtsboardState} from "./DraughtsboardState.js"
-import {DraughtsPosition, DRAUGHTS} from "./DraughtsPosition.js"
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
 import {BoardView} from "./BoardView.js"
@@ -41,7 +40,7 @@ export const MARKER_TYPE = {
 
 export class Board {
 
-    constructor(context, props = {}) {
+    constructor(context, props) {
         if (!context) {
             throw new Error("container element is " + context)
         }
@@ -49,7 +48,6 @@ export class Board {
         this.id = (Math.random() + 1).toString(36).substring(2, 8)
         this.extensions = []
         let defaultProps = {
-            position: DRAUGHTS.empty,
             orientation: COLOR.white, // white on bottom
             responsive: true, // resize the board automatically to the size of the context element
             animationDuration: 300, // pieces animation duration in milliseconds. Disable all animation with `0`.
@@ -96,7 +94,7 @@ export class Board {
             this.extensions.push(new extensionData.class(this, extensionData.props))
         }
         this.view.redrawBoard()
-        this.state.position = new DraughtsPosition(this.props.position)
+        this.state.position = this.props.position.clone()
         this.view.redrawPieces()
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
     }
@@ -119,7 +117,7 @@ export class Board {
 
     async setPosition(fen, animated = false) {
         const positionFrom = this.state.position.clone()
-        const positionTo = new DraughtsPosition(fen)
+        const positionTo = this.state.position.createPosition(fen)
         if(positionFrom.getFen() !== positionTo.getFen()) {
             this.state.position.setFen(fen)
             this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)

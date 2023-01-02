@@ -44,7 +44,7 @@
 </div>
 </div>
 <script type='module'>
-    import {Board} from "../../src/cm-draughtsboard/Board.js"
+    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
 states = [
 '.xx....x..xxxxx.xx.......o.oo....oxxooo..ooo..o.o.W',
 '.xx....x..xxxxx.xx.......o.oo...ooxxo.o..ooo..o.o.B',
@@ -97,7 +97,7 @@ let board_ids = [];
 
 window.makeDiagram = (index, id, style, location) => {
   board_ids.push(id)
-  return new Board(document.getElementById(id),
+  return new DraughtsBoard(document.getElementById(id),
       {
         position: states[index],
         style: { cssClass: style },

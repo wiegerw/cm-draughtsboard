@@ -23,14 +23,15 @@ new Board(document.getElementById("board2"), {
 })
 </pre>
 <script type="module">
-    import {Board, COLOR} from "../../src/cm-draughtsboard/Board.js"
+    import {COLOR} from "../../src/cm-draughtsboard/Board.js"
+    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
     import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
-    new Board(document.getElementById("board1"), {
+    new DraughtsBoard(document.getElementById("board1"), {
         position: DRAUGHTS.start,
         sprite: {url: "../../data/pieces"},
     })
-    new Board(document.getElementById("board2"), {
+    new DraughtsBoard(document.getElementById("board2"), {
         position: "...x.x.xxxx.xxxx.x..xx.o.x..o.oo.o.ooooo.o.o.o.o..B",
         sprite: {url: "../../data/pieces"},
         orientation: COLOR.black

@@ -90,7 +90,7 @@ export class DraughtsPosition extends Position {
         return cloned
     }
 
-    createEmptyPosition() {
-        return DraughtsPosition(DRAUGHTS.empty)
+    createPosition(text = DRAUGHTS.empty) {
+        return new DraughtsPosition(text)
     }
 }

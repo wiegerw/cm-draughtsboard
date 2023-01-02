@@ -18,10 +18,10 @@ new Board(document.getElementById("board"), {
     })
 </pre>
 <script type="module">
-    import {Board} from "../../src/cm-draughtsboard/Board.js"
+    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
     import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsPosition.js";
 
-    new Board(document.getElementById("board"), {
+    new DraughtsBoard(document.getElementById("board"), {
         position: DRAUGHTS.start,
         sprite: {url: "../../data/pieces"},
         style: { aspectRatio: 0.9 }
