@@ -113,14 +113,14 @@ export class Board {
             const fenNormalized = fenParts[0]
 
             if (fenNormalized !== currentFen) {
-                const prevSquares = this.state.squares.slice(0) // clone
+                const prevSquares = this.state.position.squares.slice(0) // clone
                 this.state.setPosition(fen)
                 if (animated) {
-                    this.view.animatePieces(prevSquares, this.state.squares.slice(0), () => {
+                    this.view.animatePieces(prevSquares, this.state.position.squares.slice(0), () => {
                         resolve()
                     })
                 } else {
-                    this.view.redrawPieces(this.state.squares)
+                    this.view.redrawPieces(this.state.position.squares)
                     resolve()
                 }
             } else {

@@ -39,27 +39,10 @@ export class DraughtsboardState {
         this.notation_start = 2
         this.invert_flag = 0
         this.flipped = false
-
-        // TODO: remove the code below
-        this.squares = new Array(this.rows * this.columns).fill(undefined)
     }
 
     setPosition(text, animated = false) {
         this.position = new DraughtsPosition(text, animated)
-
-        // TODO: remove the code below
-        if (text) {
-            for (let i = 0; i < text.length; i++) {
-                let piece = undefined
-                switch(text[i]) {
-                    case 'x': piece = 'bp'; break;
-                    case 'X': piece = 'bq'; break;
-                    case 'o': piece = 'wp'; break;
-                    case 'O': piece = 'wq'; break;
-                }
-                this.squares[this.index2pos(i)] = piece
-            }
-        }
     }
 
     movePiece(fromIndex, toIndex, animated = false) {
@@ -79,9 +62,6 @@ export class DraughtsboardState {
         position.animated = animated
         position.setPiece(index, piece)
         this._position = position
-
-        // TODO: remove the code below
-        this.squares[index] = piece
     }
 
     addMarker(index, type) {
@@ -235,7 +215,7 @@ export class DraughtsboardState {
         for (let i = 0; i < N; i++) {
             const pos = this.index2pos(i);
             let piece = '.';
-            switch(this.squares[pos]) {
+            switch(this.position.squares[pos]) {
                 case 'bp': piece = 'x'; break;
                 case 'bq': piece = 'X'; break;
                 case 'wp': piece = 'o'; break;
