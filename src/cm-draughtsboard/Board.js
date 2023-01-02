@@ -108,9 +108,9 @@ export class Board {
         return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
     }
 
-    async movePiece(squareFrom, squareTo, animated = false) {
+    async movePiece(indexFrom, indexTo, animated = false) {
         const positionFrom = this.state.position.clone()
-        this.state.position.movePiece(squareFrom, squareTo)
+        this.state.position.movePiece(indexFrom, indexTo)
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
     }

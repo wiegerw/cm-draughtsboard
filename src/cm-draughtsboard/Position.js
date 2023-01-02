@@ -46,12 +46,12 @@ export class Position {
         this.squares[indexFrom] = undefined
     }
 
-    setPiece(square, piece) {
-        this.squares[square] = piece
+    setPiece(index, piece) {
+        this.squares[index] = piece
     }
 
-    getPiece(square) {
-        return this.squares[square]
+    getPiece(index) {
+        return this.squares[index]
     }
 
     clone() {
