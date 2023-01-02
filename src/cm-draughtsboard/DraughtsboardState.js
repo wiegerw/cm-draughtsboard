@@ -4,21 +4,13 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
+import {BoardState} from "./BoardState.js";
 import {DraughtsPosition} from "./DraughtsPosition.js"
-import {createTask} from "./Position.js"
 
-export class DraughtsboardState {
+export class DraughtsboardState extends BoardState {
 
     constructor() {
-        this.position = new DraughtsPosition()
-        this.orientation = undefined
-        this.markers = []
-        this.inputWhiteEnabled = false
-        this.inputBlackEnabled = false
-        this.inputEnabled = false
-        this.squareSelectEnabled = false
-        this.extensionPoints = {}
-        this.moveInputProcess = createTask().resolve()
+        super(new DraughtsPosition())
 
         // PDN gametype attributes for international draughts
         // TODO: set these attributes via the constructor
@@ -35,63 +27,22 @@ export class DraughtsboardState {
         this.position = new DraughtsPosition(text, animated)
     }
 
-    movePiece(fromIndex, toIndex, animated = false) {
-        const position = this._position.clone()
-        position.animated = animated
-        const piece = position.getPiece(fromIndex)
-        if (!piece) {
-            console.error("no piece on", fromIndex)
-        }
-        position.setPiece(fromIndex, undefined)
-        position.setPiece(toIndex, piece)
-        this._position = position
-    }
-
-    setPiece(index, piece, animated = false) {
-        const position = this._position.clone()
-        position.animated = animated
-        position.setPiece(index, piece)
-        this._position = position
-    }
-
-    addMarker(index, type) {
-        this.markers.push({index: index, type: type})
-    }
-
-    removeMarkers(index = undefined, type = undefined) {
-        if (!index && !type) {
-            this.markers = []
-        } else {
-            this.markers = this.markers.filter((marker) => {
-                if (!type) {
-                    if (index === marker.index) {
-                        return false
-                    }
-                } else if (!index) {
-                    if (marker.type === type) {
-                        return false
-                    }
-                } else if (marker.type === type && index === marker.index) {
-                    return false
-                }
-                return true
-            })
-        }
-    }
-
-    invokeExtensionPoints(name, data = {}) {
-        const extensionPoints = this.extensionPoints[name]
-        const dataCloned = Object.assign({}, data)
-        dataCloned.extensionPoint = name
-        let returnValue = true
-        if (extensionPoints) {
-            for (const extensionPoint of extensionPoints) {
-                if(extensionPoint(dataCloned) === false) {
-                    returnValue = false
-                }
+    // TODO: reuse code from DraughtsPosition
+    getPosition() {
+        let N = (this.rows * this.columns) / 2
+        let pieces = new Array(N)
+        for (let i = 0; i < N; i++) {
+            const pos = this.index2pos(i);
+            let piece = '.';
+            switch(this.position.squares[pos]) {
+                case 'bp': piece = 'x'; break;
+                case 'bq': piece = 'X'; break;
+                case 'wp': piece = 'o'; break;
+                case 'wq': piece = 'O'; break;
             }
+            pieces[i] = piece
         }
-        return returnValue
+        return pieces.join("")
     }
 
     is_non_playing_field(r, c)
@@ -197,23 +148,6 @@ export class DraughtsboardState {
         {
             return 'abcdefghijklmnop'[c] + [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16][r];
         }
-    }
-
-    getPosition() {
-        let N = (this.rows * this.columns) / 2
-        let pieces = new Array(N)
-        for (let i = 0; i < N; i++) {
-            const pos = this.index2pos(i);
-            let piece = '.';
-            switch(this.position.squares[pos]) {
-                case 'bp': piece = 'x'; break;
-                case 'bq': piece = 'X'; break;
-                case 'wp': piece = 'o'; break;
-                case 'wq': piece = 'O'; break;
-            }
-            pieces[i] = piece
-        }
-        return pieces.join("")
     }
 
     // square is in alphanumeric format, e.g. 'b3'
