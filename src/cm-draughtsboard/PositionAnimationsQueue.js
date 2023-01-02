@@ -1,6 +1,7 @@
 /**
  * Author and copyright: Stefan Haack (https://shaack.com)
- * Repository: https://github.com/shaack/cm-chessboard
+ *                       Wieger Wesselink (https://10x10.org)
+ * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
 import {Svg} from "./BoardView.js"
