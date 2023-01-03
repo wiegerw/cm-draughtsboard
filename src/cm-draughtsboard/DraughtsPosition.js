@@ -16,7 +16,7 @@ export const DRAUGHTS = {
 
 export class DraughtsPosition extends Position {
 
-    constructor(text = undefined, animated = false, rows = 10, columns = 10) {
+    constructor(text = undefined, rows = 10, columns = 10) {
         super()
         this.rows = rows
         this.columns = columns
