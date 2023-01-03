@@ -171,7 +171,7 @@ export class VisualMoveInput {
 
             case STATE.reset:
                 if (this.fromIndex && !this.toIndex && this.movedPiece) {
-                    this.board.state.position.setPiece(this.fromIndex, this.movedPiece)
+                    this.board.state.setPiece(this.fromIndex, this.movedPiece)
                 }
                 this.fromIndex = undefined
                 this.toIndex = undefined
@@ -351,7 +351,7 @@ export class VisualMoveInput {
                 if (this.moveInputState === STATE.dragTo || this.moveInputState === STATE.clickDragTo) {
                     if (this.fromIndex === index) {
                         if (this.moveInputState === STATE.clickDragTo) {
-                            this.board.state.position.setPiece(this.fromIndex, this.movedPiece)
+                            this.board.state.setPiece(this.fromIndex, this.movedPiece)
                             this.view.setPieceVisibility(this.fromIndex)
                             this.moveInputCanceledCallback(MOVE_CANCELED_REASON.draggedBack, index, index)
                             this.setMoveInputState(STATE.reset)

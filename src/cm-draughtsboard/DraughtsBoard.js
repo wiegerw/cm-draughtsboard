@@ -6,17 +6,13 @@
  */
 
 import {Board} from "./Board.js"
-import {DraughtsPosition, DRAUGHTS} from "./DraughtsPosition.js";
+import {DraughtsBoardState} from "./DraughtsBoardState.js";
 
 export class DraughtsBoard extends Board {
 
     constructor(context, props) {
-        if (props.position === undefined) {
-            props.position = new DraughtsPosition(DRAUGHTS.empty)
-        }
-        else
-        {
-            props.position = new DraughtsPosition(props.position)
+        if (props.state === undefined) {
+            props.state = new DraughtsBoardState(props.position)
         }
         super(context, props)
     }

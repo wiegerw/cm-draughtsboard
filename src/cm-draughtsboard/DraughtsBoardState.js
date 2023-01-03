@@ -4,42 +4,64 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {BoardState} from "./BoardState.js";
-import {DraughtsPosition} from "./DraughtsPosition.js"
+import {BoardState} from "./BoardState.js"
+import {Position} from "./Position.js"
 
 export const DRAUGHTSPIECE = {
     wp: "wp", wq: "wq", wk: "wk",
     bp: "bp", bq: "bq", bk: "bk"
 }
 
+export const DRAUGHTS_START_POSITION = "xxxxxxxxxxxxxxxxxxxx..........ooooooooooooooooooooW"
+export const DRAUGHTS_EMPTY_POSITION = "..................................................W"
+export const DRAUGHTS = {
+    start: DRAUGHTS_START_POSITION,
+    empty: DRAUGHTS_EMPTY_POSITION
+}
+
 export class DraughtsBoardState extends BoardState {
 
-    constructor() {
-        super(new DraughtsPosition())
+    constructor(text = DRAUGHTS.empty,
+                rows = 10,
+                columns = 10,
+                type_number = 20,
+                notation_type = 'N',
+                notation_start = 2,
+                invert_flag = 0,
+                flipped = false
+    ) {
+        super(rows, columns)
 
-        // PDN gametype attributes for international draughts
-        // TODO: set these attributes via the constructor
-        this.type_number = 20
-        this.rows = 10
-        this.columns = 10
-        this.notation_type = 'N'
-        this.notation_start = 2
-        this.invert_flag = 0
-        this.flipped = false
+        // PDN gametype attributes
+        this.type_number = type_number
+        this.notation_type = notation_type
+        this.notation_start = notation_start
+        this.invert_flag = invert_flag
+        this.flipped = flipped
+        this.setFen(text)
     }
 
-    setPosition(text, animated = false) {
-        this.position = new DraughtsPosition(text, animated)
+    setFen(text)
+    {
+        for (let i = 0; i < text.length; i++) {
+            let piece = undefined
+            switch(text[i]) {
+                case 'x': piece = 'bp'; break;
+                case 'X': piece = 'bq'; break;
+                case 'o': piece = 'wp'; break;
+                case 'O': piece = 'wq'; break;
+            }
+            this.squares[this.index2pos(i)] = piece
+        }
     }
 
-    // TODO: reuse code from DraughtsPosition
-    getPosition() {
+    getFen() {
         let N = (this.rows * this.columns) / 2
         let pieces = new Array(N)
         for (let i = 0; i < N; i++) {
             const pos = this.index2pos(i);
             let piece = '.';
-            switch(this.position.squares[pos]) {
+            switch(this.squares[pos]) {
                 case 'bp': piece = 'x'; break;
                 case 'bq': piece = 'X'; break;
                 case 'wp': piece = 'o'; break;
@@ -48,6 +70,21 @@ export class DraughtsBoardState extends BoardState {
             pieces[i] = piece
         }
         return pieces.join("")
+    }
+
+    createPosition(text = DRAUGHTS.empty) {
+        let squares = new Array(this.rows * this.columns).fill(undefined)
+        for (let i = 0; i < text.length; i++) {
+            let piece = undefined
+            switch(text[i]) {
+                case 'x': piece = 'bp'; break;
+                case 'X': piece = 'bq'; break;
+                case 'o': piece = 'wp'; break;
+                case 'O': piece = 'wq'; break;
+            }
+            squares[this.index2pos(i)] = piece
+        }
+        return new Position(this.rows, this.columns, squares)
     }
 
     is_non_playing_field(r, c)

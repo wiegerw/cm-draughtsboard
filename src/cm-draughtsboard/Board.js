@@ -5,7 +5,6 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {DraughtsBoardState} from "./DraughtsBoardState.js"
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
 import {BoardView} from "./BoardView.js"
@@ -85,7 +84,7 @@ export class Board {
             this.props.language = "en"
         }
 
-        this.state = new DraughtsBoardState()
+        this.state = props.state
         this.view = new BoardView(this)
         this.positionAnimationsQueue = new PositionAnimationsQueue(this)
         this.state.orientation = this.props.orientation
@@ -94,7 +93,6 @@ export class Board {
             this.extensions.push(new extensionData.class(this, extensionData.props))
         }
         this.view.redrawBoard()
-        this.state.position = this.props.position.clone()
         this.view.redrawPieces()
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
     }
@@ -102,48 +100,49 @@ export class Board {
     // API //
 
     async setPiece(index, piece, animated = false) {
-        const positionFrom = this.state.position.clone()
-        this.state.position.setPiece(index, piece)
+        const positionFrom = this.state.clone()
+        this.state.setPiece(index, piece)
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
     }
 
     async movePiece(indexFrom, indexTo, animated = false) {
-        const positionFrom = this.state.position.clone()
-        this.state.position.movePiece(indexFrom, indexTo)
+        const positionFrom = this.state.clone()
+        this.state.movePiece(indexFrom, indexTo)
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
     }
 
     async setPosition(fen, animated = false) {
-        const positionFrom = this.state.position.clone()
-        const positionTo = this.state.position.createPosition(fen)
-        if(positionFrom.getFen() !== positionTo.getFen()) {
-            this.state.position.setFen(fen)
+        const positionFrom = this.state.clone()
+        const positionTo = this.state.createPosition(fen)
+        if (!positionFrom.equals(positionTo)) {
+            this.state.setFen(fen)
             this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         }
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.position.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
     }
 
     async setOrientation(color, animated = false) {
-        const position = this.state.position.clone()
+        const position = this.state.clone()
         if (this.boardTurning) {
             console.log("setOrientation is only once in queue allowed")
             return
         }
         this.boardTurning = true
-        return this.positionAnimationsQueue.enqueueTurnBoard(position, color, animated).then(() => {
+        const emptyPosition = this.state.createPosition()
+        return this.positionAnimationsQueue.enqueueTurnBoard(position, emptyPosition, color, animated).then(() => {
             this.boardTurning = false
             this.state.invokeExtensionPoints(EXTENSION_POINT.boardChanged)
         })
     }
 
     getPiece(index) {
-        return this.state.position.getPiece(index)
+        return this.state.getPiece(index)
     }
 
     getPosition() {
-        return this.state.position.getFen()
+        return this.state.getFen()
     }
 
     getOrientation() {
