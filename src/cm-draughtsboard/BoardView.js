@@ -302,7 +302,7 @@ export class BoardView {
 
     // Pieces //
 
-    redrawPieces(squares = this.board.state.position.squares) {
+    redrawPieces(squares = this.board.state.squares) {
         const childNodes = Array.from(this.piecesGroup.childNodes)
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {

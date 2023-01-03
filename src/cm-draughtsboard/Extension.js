@@ -17,21 +17,21 @@ export const EXTENSION_POINT = {
 
 export class Extension {
 
-    constructor(chessboard, props) {
-        this.chessboard = chessboard
+    constructor(board, props) {
+        this.board = board
         this.props = props
     }
 
     registerExtensionPoint(name, callback) {
-        if (!this.chessboard.state.extensionPoints[name]) {
-            this.chessboard.state.extensionPoints[name] = []
+        if (!this.board.state.extensionPoints[name]) {
+            this.board.state.extensionPoints[name] = []
         }
-        this.chessboard.state.extensionPoints[name].push(callback)
+        this.board.state.extensionPoints[name].push(callback)
     }
 
     registerMethod(name, callback) {
-        if (!this.chessboard[name]) {
-            this.chessboard[name] = (...args) => {
+        if (!this.board[name]) {
+            this.board[name] = (...args) => {
                 return callback.apply(this, args)
             }
         } else {

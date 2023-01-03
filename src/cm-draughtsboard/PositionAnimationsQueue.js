@@ -228,7 +228,7 @@ export class PositionAnimationsQueue extends PromiseQueue {
     }
 
     async enqueuePositionChange(positionFrom, positionTo, animated) {
-        if(positionFrom.getFen() === positionTo.getFen()) {
+        if(positionFrom.equals(positionTo)) {
             return Promise.resolve()
         } else {
             return super.enqueue(() => new Promise((resolve) => {
@@ -250,9 +250,8 @@ export class PositionAnimationsQueue extends PromiseQueue {
         }
     }
 
-    async enqueueTurnBoard(position, color, animated) {
+    async enqueueTurnBoard(position, emptyPosition, color, animated) {
         return super.enqueue(() => new Promise((resolve) => {
-            const emptyPosition = position.createPosition()
             let duration = animated ? this.board.props.animationDuration : 0
             if(this.queue.length > 0) {
                 duration = duration / (1 + Math.pow(this.queue.length / 5, 2))

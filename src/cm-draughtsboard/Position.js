@@ -16,22 +16,22 @@ export function createTask() {
     return promise
 }
 
+const compareArrays = (a, b) =>
+  a.length === b.length && a.every((element, index) => element === b[index]);
+
 export class Position {
 
-    constructor() {
-        this.squares = undefined
-    }
-
-    setFen(fen) {
-        throw new Error('Not implemented yet')
-    }
-
-    getFen() {
-        throw new Error('Not implemented yet')
-    }
-
-    createPosition(text = undefined) {
-        throw new Error('Not implemented yet')
+    constructor(rows, columns, squares=undefined) {
+        this.rows = rows
+        this.columns = columns
+        if (squares)
+        {
+            this.squares = squares
+        }
+        else
+        {
+            this.squares = new Array(rows * columns).fill(undefined)
+        }
     }
 
     movePiece(indexFrom, indexTo) {
@@ -52,8 +52,12 @@ export class Position {
     }
 
     clone() {
-        const cloned = new Position()
+        const cloned = new Position(this.rows, this.columns)
         cloned.squares = this.squares.slice(0)
         return cloned
+    }
+
+    equals(pos) {
+        return compareArrays(this.squares, pos.squares)
     }
 }

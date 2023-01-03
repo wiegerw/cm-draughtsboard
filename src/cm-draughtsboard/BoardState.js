@@ -5,11 +5,12 @@
  * License: MIT, see file 'LICENSE'
  */
 import {createTask} from "./Position.js"
+import {Position} from "./Position.js"
 
-export class BoardState {
+export class BoardState extends Position {
 
-    constructor(position) {
-        this.position = position
+    constructor(rows, columns) {
+        super(rows, columns)
         this.orientation = undefined
         this.markers = []
         this.inputWhiteEnabled = false
