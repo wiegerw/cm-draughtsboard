@@ -4,7 +4,6 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {DraughtsPosition} from "./DraughtsPosition.js"
 import {createTask} from "./Position.js"
 
 export class BoardState {
@@ -19,25 +18,6 @@ export class BoardState {
         this.squareSelectEnabled = false
         this.extensionPoints = {}
         this.moveInputProcess = createTask().resolve()
-    }
-
-    movePiece(fromIndex, toIndex, animated = false) {
-        const position = this._position.clone()
-        position.animated = animated
-        const piece = position.getPiece(fromIndex)
-        if (!piece) {
-            console.error("no piece on", fromIndex)
-        }
-        position.setPiece(fromIndex, undefined)
-        position.setPiece(toIndex, piece)
-        this._position = position
-    }
-
-    setPiece(index, piece, animated = false) {
-        const position = this._position.clone()
-        position.animated = animated
-        position.setPiece(index, piece)
-        this._position = position
     }
 
     addMarker(index, type) {
