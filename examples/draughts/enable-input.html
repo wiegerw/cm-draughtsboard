@@ -37,9 +37,7 @@ function inputHandler(event) {
 </button>
 <div id="output" style="width: 100%; overflow: hidden"></div>
 <script type="module">
-    import {INPUT_EVENT_TYPE} from "../../src/cm-draughtsboard/Board.js"
-    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
-    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsBoardState.js"
+    import {DraughtsBoard, DRAUGHTS, INPUT_EVENT_TYPE} from "../../src/cm-draughtsboard/Draughts.js"
 
     window.board = new DraughtsBoard(document.getElementById("board"), {
         position: DRAUGHTS.start,

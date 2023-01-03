@@ -43,8 +43,7 @@ await board.movePiece("c3", "d5")
 await board.movePiece("d5", "f4")
 </pre>
 <script type="module">
-    import {DraughtsBoard} from "../../src/cm-draughtsboard/DraughtsBoard.js"
-    import {DRAUGHTS} from "../../src/cm-draughtsboard/DraughtsBoardState.js"
+    import {DraughtsBoard, DRAUGHTS} from "../../src/cm-draughtsboard/Draughts.js"
 
     const board = new DraughtsBoard(document.getElementById("board"),
         {
