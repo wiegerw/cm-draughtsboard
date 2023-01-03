@@ -18,12 +18,11 @@ export function createTask() {
 
 export class Position {
 
-    constructor(text = undefined, animated = false) {
+    constructor() {
         this.squares = undefined
-        this.animated = animated
     }
 
-    setFen(fen ) {
+    setFen(fen) {
         throw new Error('Not implemented yet')
     }
 
