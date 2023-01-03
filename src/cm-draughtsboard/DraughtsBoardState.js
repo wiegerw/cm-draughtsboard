@@ -7,7 +7,7 @@
 import {BoardState} from "./BoardState.js";
 import {DraughtsPosition} from "./DraughtsPosition.js"
 
-export class DraughtsboardState extends BoardState {
+export class DraughtsBoardState extends BoardState {
 
     constructor() {
         super(new DraughtsPosition())

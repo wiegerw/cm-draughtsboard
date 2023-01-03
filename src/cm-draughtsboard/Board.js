@@ -5,7 +5,7 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {DraughtsboardState} from "./DraughtsboardState.js"
+import {DraughtsBoardState} from "./DraughtsBoardState.js"
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
 import {BoardView} from "./BoardView.js"
@@ -85,7 +85,7 @@ export class Board {
             this.props.language = "en"
         }
 
-        this.state = new DraughtsboardState()
+        this.state = new DraughtsBoardState()
         this.view = new BoardView(this)
         this.positionAnimationsQueue = new PositionAnimationsQueue(this)
         this.state.orientation = this.props.orientation

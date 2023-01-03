@@ -65,23 +65,6 @@ export class DraughtsPosition extends Position {
         return pieces.join("")
     }
 
-    movePiece(indexFrom, indexTo) {
-        if(!this.squares[indexFrom]) {
-            console.warn("no piece on", indexFrom)
-            return
-        }
-        this.squares[indexTo] = this.squares[indexFrom]
-        this.squares[indexFrom] = undefined
-    }
-
-    setPiece(index, piece) {
-        this.squares[index] = piece
-    }
-
-    getPiece(index) {
-        return this.squares[index]
-    }
-
     clone() {
         const cloned = new DraughtsPosition()
         cloned.rows = this.rows

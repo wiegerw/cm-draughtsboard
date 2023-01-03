@@ -16,8 +16,6 @@ export function createTask() {
     return promise
 }
 
-// TODO: it seems to me that this should become a base class of BoardState
-//       N.B. However, there is a name clash (getPiece / setPiece etc.)
 export class Position {
 
     constructor(text = undefined, animated = false) {

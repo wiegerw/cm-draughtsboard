@@ -36,7 +36,6 @@ export class BoardView {
         }
 
         this.pointerDownListener = this.pointerDownHandler.bind(this)
-        this.pointerDownListener = this.pointerDownHandler.bind(this)  // TODO: remove this
         this.context.addEventListener("mousedown", this.pointerDownListener)
         this.context.addEventListener("touchstart", this.pointerDownListener)
 
