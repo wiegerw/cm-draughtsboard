@@ -78,12 +78,12 @@ export class PositionsAnimation {
     constructor(view, fromPosition, toPosition, duration, callback) {
         this.view = view
         if (fromPosition && toPosition) {
+            this.rows = fromPosition.rows
+            this.columns = fromPosition.columns
             this.animatedElements = this.createAnimation(fromPosition.squares, toPosition.squares)
             this.duration = duration
             this.callback = callback
             this.frameHandle = requestAnimationFrame(this.animationStep.bind(this))
-            this.rows = fromPosition.rows
-            this.columns = fromPosition.columns
         } else {
             console.error("fromPosition", fromPosition, "toPosition", toPosition)
         }
@@ -113,11 +113,11 @@ export class PositionsAnimation {
             }
         }
         appearedList.forEach((appeared) => {
-            let shortestDistance = 8
+            let shortestDistance = Math.max(this.rows, this.columns)
             let foundMoved = undefined
             disappearedList.forEach((disappeared) => {
                 if (appeared.piece === disappeared.piece) {
-                    const moveDistance = PositionsAnimation.squareDistance(appeared.index, disappeared.index)
+                    const moveDistance = this.squareDistance(appeared.index, disappeared.index)
                     if (moveDistance < shortestDistance) {
                         foundMoved = disappeared
                         shortestDistance = moveDistance

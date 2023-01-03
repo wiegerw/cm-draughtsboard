@@ -7,6 +7,11 @@
 import {BoardState} from "./BoardState.js";
 import {DraughtsPosition} from "./DraughtsPosition.js"
 
+export const DRAUGHTSPIECE = {
+    wp: "wp", wq: "wq", wk: "wk",
+    bp: "bp", bq: "bq", bk: "bk"
+}
+
 export class DraughtsBoardState extends BoardState {
 
     constructor() {
