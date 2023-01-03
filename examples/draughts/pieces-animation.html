@@ -29,21 +29,28 @@
 <button onclick="switchOrientation(true)">Switch Orientation</button>
 <pre>&lt;button onclick="window.board.setPosition('rn2k1r1/ppp1pp1p/3p2p1/5bn1/P7/2N2B2/1PPPPP2/2BNK1RR')"&gt;Position 3&lt;/button&gt;</pre>
 <br/>
-<span style="margin-right: 0.5rem">Move piece <label for="moveFrom">from</label> <input id="moveFrom" type="text" size="2" value="37"/> <label
-        for="moveTo">to</label> <input id="moveTo" type="text" size="2"
-                                       value="51"/></span>
+<span style="margin-right: 0.5rem">Move piece
+    <label for="moveFrom">from</label> <input id="moveFrom" type="text" size="2" value="31"/>
+    <label for="moveTo">to</label> <input id="moveTo" type="text" size="2" value="22"/></span>
 <button onclick="movePiece()">Do move</button>
 <pre>board.movePiece(squareFrom, squareTo)</pre>
 <br/>
-<button onclick="knightMove()">Knight dance</button>
+<button onclick="kingCapture1()">King capture</button>
 <pre>
-board.setPiece("e4", PIECE.wn)
-await board.movePiece("e4", "c3")
-await board.movePiece("c3", "d5")
-await board.movePiece("d5", "f4")
+      board.setPosition(DRAUGHTS.empty)
+      board.setPiece(32, DRAUGHTSPIECE.wq)
+      board.setPiece(17, DRAUGHTSPIECE.bp)
+      board.setPiece(18, DRAUGHTSPIECE.bp)
+      board.setPiece(28, DRAUGHTSPIECE.bp)
+      board.movePiece(32, 23, true)
+      board.movePiece(23, 12, true)
+      board.movePiece(12, 26, true)
+      board.setPiece(17, undefined)
+      board.setPiece(18, undefined)
+      board.setPiece(28, undefined)
 </pre>
 <script type="module">
-    import {DraughtsBoard, DRAUGHTS} from "../../src/cm-draughtsboard/Draughts.js"
+    import {DraughtsBoard, DRAUGHTS, DRAUGHTSPIECE, PIECE_TYPE} from "../../src/cm-draughtsboard/Draughts.js"
 
     const board = new DraughtsBoard(document.getElementById("board"),
         {
@@ -71,14 +78,23 @@ await board.movePiece("d5", "f4")
         console.log("movePiece", squareFrom, squareTo)
         board.movePiece(squareFrom, squareTo, true)
     }
-    window.knightMove = async () => {
-        board.setPiece("e5", PIECE.wn)
-        board.movePiece("e5", "c4", true)
-        board.movePiece("c4", "d6", true)
-        board.movePiece("d6", "f5", true)
-        board.movePiece("f5", "h4", true)
-        board.movePiece("h4", "g6", true)
-        board.movePiece("g6", "e5", true)
+    window.kingCapture1 = async () => {
+      board.setPosition(DRAUGHTS.empty)
+      board.setPiece(32, DRAUGHTSPIECE.wq)
+      board.setPiece(17, DRAUGHTSPIECE.bp)
+      board.setPiece(18, DRAUGHTSPIECE.bp)
+      board.setPiece(28, DRAUGHTSPIECE.bp)
+      board.movePiece(32, 23, true)
+      board.movePiece(23, 12, true)
+      board.movePiece(12, 26, true)
+      board.setPiece(17, undefined)
+      board.setPiece(18, undefined)
+      board.setPiece(28, undefined)
+    }
+    window.kingCapture = async () => {
+      await board.setPosition("x..x.o..xx....ox....oo..ox..o.x.o...oo...oo.......B")
+      let movegen = new MoveGenerator()
+      await board.moveToPosition(movegen, "x..x.o..xx....ox........o...o.x.....oo...o.....X..W")
     }
 </script>
 </body>

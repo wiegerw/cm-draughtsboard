@@ -19,6 +19,55 @@ export const DRAUGHTS = {
     empty: DRAUGHTS_EMPTY_POSITION
 }
 
+function half(n)
+{
+  return ~~(n / 2)
+}
+
+export const PIECE_TYPE = {
+  whitePiece: "o",
+  blackPiece: "x",
+  whiteKing: "O",
+  blackKing: "X",
+  empty: "."
+}
+
+function pieceToChar(piece)
+{
+  switch (piece)
+  {
+    case 'bp': return 'x'
+    case 'bq': return 'X'
+    case 'wp': return 'o'
+    case 'wq': return 'O'
+    default: return '.'
+  }
+}
+
+function pieceToPieceType(piece)
+{
+  switch (piece)
+  {
+    case 'bp': return PIECE_TYPE.blackPiece
+    case 'bq': return PIECE_TYPE.blackKing
+    case 'wp': return PIECE_TYPE.whitePiece
+    case 'wq': return PIECE_TYPE.whiteKing
+    default: return PIECE_TYPE.empty
+  }
+}
+
+export function pieceTypeToPiece(piece)
+{
+  switch (piece)
+  {
+    case PIECE_TYPE.blackPiece: return 'bp'
+    case PIECE_TYPE.blackKing: return 'bq'
+    case PIECE_TYPE.whitePiece: return 'wp'
+    case PIECE_TYPE.whiteKing: return 'wq'
+    default: return undefined
+  }
+}
+
 export class DraughtsBoardState extends BoardState {
 
     constructor(text = DRAUGHTS.empty,
@@ -91,7 +140,7 @@ export class DraughtsBoardState extends BoardState {
         return new Position(this.rows, this.columns, squares)
     }
 
-    is_non_playing_field(r, c)
+    isNonPlayingField(r, c)
     {
         if (this.type_number === 30) // Turkish draughts
         {
@@ -110,9 +159,9 @@ export class DraughtsBoardState extends BoardState {
         }
     }
 
-    is_player_field(r, c)
+    isPlayerField(r, c)
     {
-        if (this.is_non_playing_field(r, c))
+        if (this.isNonPlayingField(r, c))
         {
             return false;
         }
@@ -130,9 +179,10 @@ export class DraughtsBoardState extends BoardState {
         return minrow <= r && r <= maxrow;
     }
 
-    is_opponent_field(r, c)
+    isOpponentField(field)
     {
-        if (this.is_non_playing_field(r, c))
+        [r, c] = this.f2rc(field)
+        if (this.isNonPlayingField(r, c))
         {
             return false;
         }
@@ -150,6 +200,11 @@ export class DraughtsBoardState extends BoardState {
         return minrow <= r && r <= maxrow;
     }
 
+    getMaxField()
+    {
+        return half(this.rows * this.columns)
+    }
+
     // Converts an index in a position string like 'xxxxx...ooo' to an index in the squares array
     index2pos(i) {
         const d = this.columns / 2;
@@ -165,6 +220,42 @@ export class DraughtsBoardState extends BoardState {
             return -1; // out of board
         }
         return 1 + (r * ~~(this.columns / 2)) + ~~(c / 2);
+    }
+
+    f2r(f)
+    {
+        f = f - 1
+
+        if ((f < 0) || (f > (this.getMaxField() - 1)))
+        {
+          return -1;
+        }
+        else
+        {
+          return ~~((f * 2) / this.columns)
+        }
+    }
+
+    f2rc(f)
+    {
+        f = f - 1
+
+        if ((f < 0) || (f > (this.getMaxField() - 1)))
+        {
+          return -1
+        }
+
+        let d = half(this.columns)
+
+        let r = ~~((f * 2) / this.columns)
+        let c = 1 - (~~(f / d) % 2) + (2 * (f % d))
+        return [r, c]
+    }
+
+    f2index(f)
+    {
+        const [row, column] = this.f2rc(f)
+        return (this.rows - row - 1) * this.columns + column
     }
 
     // 0 = Bottom left

@@ -6,5 +6,7 @@
 
 import {BORDER_TYPE, COLOR, INPUT_EVENT_TYPE} from "./Board.js"
 import {DraughtsBoard} from "./DraughtsBoard.js"
-import {DRAUGHTS} from "./DraughtsBoardState.js"
-export {BORDER_TYPE, COLOR, INPUT_EVENT_TYPE, DRAUGHTS, DraughtsBoard}
+import {DRAUGHTS, DRAUGHTSPIECE} from "./DraughtsBoardState.js"
+import {PIECE_TYPE} from "./DraughtsBoardState.js"
+
+export {BORDER_TYPE, PIECE_TYPE, COLOR, INPUT_EVENT_TYPE, DRAUGHTS, DRAUGHTSPIECE, DraughtsBoard}

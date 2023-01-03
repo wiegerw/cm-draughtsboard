@@ -291,7 +291,7 @@ export class BoardView {
         let is_top = true
         for (let row = 0; row < this.rows; row++) {
             for (let column = 0; column < this.columns; column++) {
-                if (!this.board.state.is_non_playing_field(row, column))
+                if (!this.board.state.isNonPlayingField(row, column))
                 {
                     let f = this.board.state.rc2f(row, column)
                     this.drawCoordinate(row, column, f, color, inline, is_left, is_top)
