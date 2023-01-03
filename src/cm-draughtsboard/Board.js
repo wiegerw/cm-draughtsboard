@@ -100,31 +100,31 @@ export class Board {
     // API //
 
     async setPiece(index, piece, animated = false) {
-        const positionFrom = this.state.clone()
+        const positionFrom = this.state.clonePosition()
         this.state.setPiece(index, piece)
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
 
     async movePiece(indexFrom, indexTo, animated = false) {
-        const positionFrom = this.state.clone()
+        const positionFrom = this.state.clonePosition()
         this.state.movePiece(indexFrom, indexTo)
         this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
 
     async setPosition(fen, animated = false) {
-        const positionFrom = this.state.clone()
+        const positionFrom = this.state.clonePosition()
         const positionTo = this.state.createPosition(fen)
         if (!positionFrom.equals(positionTo)) {
             this.state.setFen(fen)
             this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         }
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clone(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
 
     async setOrientation(color, animated = false) {
-        const position = this.state.clone()
+        const position = this.state.clonePosition()
         if (this.boardTurning) {
             console.log("setOrientation is only once in queue allowed")
             return
