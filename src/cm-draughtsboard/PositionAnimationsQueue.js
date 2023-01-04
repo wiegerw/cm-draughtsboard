@@ -5,6 +5,7 @@
  * License: MIT, see file 'LICENSE'
  */
 import {Svg} from "./BoardView.js"
+import {Position} from "./Position.js"
 
 /*
 * Thanks to markosyan for the idea of the PromiseQueue
@@ -250,7 +251,8 @@ export class PositionAnimationsQueue extends PromiseQueue {
         }
     }
 
-    async enqueueTurnBoard(position, emptyPosition, color, animated) {
+    async enqueueTurnBoard(position, color, animated) {
+        const emptyPosition = new Position(position.rows, position.columns)
         return super.enqueue(() => new Promise((resolve) => {
             let duration = animated ? this.board.props.animationDuration : 0
             if(this.queue.length > 0) {
