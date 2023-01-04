@@ -130,8 +130,7 @@ export class Board {
             return
         }
         this.boardTurning = true
-        const emptyPosition = this.state.createPosition()
-        return this.positionAnimationsQueue.enqueueTurnBoard(position, emptyPosition, color, animated).then(() => {
+        return this.positionAnimationsQueue.enqueueTurnBoard(position, color, animated).then(() => {
             this.boardTurning = false
             this.state.invokeExtensionPoints(EXTENSION_POINT.boardChanged)
         })
