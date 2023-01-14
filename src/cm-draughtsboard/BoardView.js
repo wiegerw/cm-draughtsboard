@@ -149,7 +149,7 @@ export class BoardView {
         this.redrawSquares()
         this.drawCoordinatesDraughts()
         this.drawMarkers()
-        this.board.state.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
+        this.board.invokeExtensionPoints(EXTENSION_POINT.redrawBoard)
         this.visualizeInputState()
     }
 
@@ -174,7 +174,7 @@ export class BoardView {
         }
         let N = this.rows * this.columns
         for (let i = 0; i < N; i++) {
-            const index = this.board.state.orientation === COLOR.white ? i : N - i - 1
+            const index = this.board.orientation === COLOR.white ? i : N - i - 1
             const squareColor = (Math.floor(index / this.columns) % 2 === index % 2) ? 'black' : 'white'
             const fieldClass = `square ${squareColor}`
             const point = this.indexToPoint(index)
@@ -208,7 +208,7 @@ export class BoardView {
                 y: y,
                 style: `font-size: ${this.scalingY * 10}px`
             })
-            if (this.board.state.orientation === COLOR.white) {
+            if (this.board.orientation === COLOR.white) {
                 textElement.textContent = String.fromCharCode(97 + column)
             } else {
                 textElement.textContent = String.fromCharCode(104 - column)
@@ -234,7 +234,7 @@ export class BoardView {
                 y: y,
                 style: `font-size: ${this.scalingY * 10}px`
             })
-            if (this.board.state.orientation === COLOR.white) {
+            if (this.board.orientation === COLOR.white) {
                 textElement.textContent = "" + (this.rows - row)
             } else {
                 textElement.textContent = "" + (1 + row)
@@ -371,7 +371,7 @@ export class BoardView {
         while (this.markersGroup.firstChild) {
             this.markersGroup.removeChild(this.markersGroup.firstChild)
         }
-        this.board.state.markers.forEach((marker) => {
+        this.board.markers.forEach((marker) => {
                 this.drawMarker(marker)
             }
         )
@@ -398,25 +398,25 @@ export class BoardView {
 
     enableMoveInput(eventHandler, color = undefined) {
         if (color === COLOR.white) {
-            this.board.state.inputWhiteEnabled = true
+            this.board.inputWhiteEnabled = true
         } else if (color === COLOR.black) {
-            this.board.state.inputBlackEnabled = true
+            this.board.inputBlackEnabled = true
         } else {
-            this.board.state.inputWhiteEnabled = true
-            this.board.state.inputBlackEnabled = true
+            this.board.inputWhiteEnabled = true
+            this.board.inputBlackEnabled = true
         }
-        this.board.state.inputEnabled = true
+        this.board.inputEnabled = true
         this.moveInputCallback = eventHandler
-        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: true, color: color})
+        this.board.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: true, color: color})
         this.visualizeInputState()
     }
 
     disableMoveInput() {
-        this.board.state.inputWhiteEnabled = false
-        this.board.state.inputBlackEnabled = false
-        this.board.state.inputEnabled = false
+        this.board.inputWhiteEnabled = false
+        this.board.inputBlackEnabled = false
+        this.board.inputEnabled = false
         this.moveInputCallback = undefined
-        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: false})
+        this.board.invokeExtensionPoints(EXTENSION_POINT.moveInputToggled, {enabled: false})
         this.visualizeInputState()
     }
 
@@ -434,7 +434,7 @@ export class BoardView {
             data.moveInputCallbackResult =  this.moveInputCallback(data)
         }
         // the new extension points
-        const extensionPointsResult = this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        const extensionPointsResult = this.board.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         // validates, when moveInputCallbackResult and extensionPointsResult are true
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
@@ -452,7 +452,7 @@ export class BoardView {
             data.moveInputCallbackResult = this.moveInputCallback(data)
         }
         // the new extension points
-        const extensionPointsResult = this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        const extensionPointsResult = this.board.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         // validates, when moveInputCallbackResult and extensionPointsResult are true
         return !(extensionPointsResult === false || !data.moveInputCallbackResult);
     }
@@ -465,7 +465,7 @@ export class BoardView {
             indexFrom: indexFrom,
             indexTo: indexTo
         }
-        this.board.state.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
+        this.board.invokeExtensionPoints(EXTENSION_POINT.moveInput, data)
         if (this.moveInputCallback) {
             this.moveInputCallback(data)
         }
@@ -475,7 +475,7 @@ export class BoardView {
 
     visualizeInputState() {
         if (this.board.state) { // fix https://github.com/shaack/cm-chessboard/issues/47
-            if (this.board.state.inputWhiteEnabled || this.board.state.inputBlackEnabled || this.board.state.squareSelectEnabled) {
+            if (this.board.inputWhiteEnabled || this.board.inputBlackEnabled || this.board.squareSelectEnabled) {
                 this.boardGroup.setAttribute("class", "board input-enabled")
             } else {
                 this.boardGroup.setAttribute("class", "board")
@@ -485,7 +485,7 @@ export class BoardView {
 
     indexToPoint(index) {
         let x, y
-        if (this.board.state.orientation === COLOR.white) {
+        if (this.board.orientation === COLOR.white) {
             x = this.borderSize + (index % this.columns) * this.squareWidth
             y = this.borderSize + (this.rows - 1 - Math.floor(index / this.columns)) * this.squareHeight
         } else {
