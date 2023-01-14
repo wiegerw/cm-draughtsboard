@@ -8,6 +8,7 @@
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
 import {BoardView} from "./BoardView.js"
+import {createTask} from "./Position.js";
 
 export const COLOR = {
     white: "w",
@@ -39,7 +40,20 @@ export const MARKER_TYPE = {
 
 export class Board {
 
-    constructor(context, props) {
+    constructor(context, props, rows=10, columns=10) {
+        // board dimensions
+        this.rows = rows
+        this.columns = columns
+
+        // interaction
+        this.inputWhiteEnabled = false
+        this.inputBlackEnabled = false
+        this.inputEnabled = false
+        this.squareSelectEnabled = false
+        this.extensionPoints = {}
+        this.moveInputProcess = createTask().resolve()
+        this.markers = []
+
         if (!context) {
             throw new Error("container element is " + context)
         }
@@ -87,14 +101,14 @@ export class Board {
         this.state = props.state
         this.view = new BoardView(this)
         this.positionAnimationsQueue = new PositionAnimationsQueue(this)
-        this.state.orientation = this.props.orientation
+        this.orientation = this.props.orientation
         // instantiate extensions
         for (const extensionData of this.props.extensions) {
             this.extensions.push(new extensionData.class(this, extensionData.props))
         }
         this.view.redrawBoard()
         this.view.redrawPieces()
-        this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
+        this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
     }
 
     // API //
@@ -102,14 +116,14 @@ export class Board {
     async setPiece(index, piece, animated = false) {
         const positionFrom = this.state.clonePosition()
         this.state.setPiece(index, piece)
-        this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
+        this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
 
     async movePiece(indexFrom, indexTo, animated = false) {
         const positionFrom = this.state.clonePosition()
         this.state.movePiece(indexFrom, indexTo)
-        this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
+        this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
 
@@ -118,7 +132,7 @@ export class Board {
         const positionTo = this.state.createPosition(fen)
         if (!positionFrom.equals(positionTo)) {
             this.state.setFen(fen)
-            this.state.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
+            this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         }
         return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
     }
@@ -132,7 +146,7 @@ export class Board {
         this.boardTurning = true
         return this.positionAnimationsQueue.enqueueTurnBoard(position, color, animated).then(() => {
             this.boardTurning = false
-            this.state.invokeExtensionPoints(EXTENSION_POINT.boardChanged)
+            this.invokeExtensionPoints(EXTENSION_POINT.boardChanged)
         })
     }
 
@@ -145,15 +159,11 @@ export class Board {
     }
 
     getOrientation() {
-        return this.state.orientation
+        return this.orientation
     }
 
     addMarker(type, index) {
-        if (typeof type === "string" || typeof index === "object") { // todo remove 2022-12-01
-            console.error("changed the signature of `addMarker` to `(type, index)` with v5.1.x")
-            return
-        }
-        this.state.addMarker(index, type)
+        this.markers.push({index: index, type: type})
         this.view.drawMarkers()
     }
 
@@ -163,7 +173,7 @@ export class Board {
             return
         }
         const markersFound = []
-        this.state.markers.forEach((marker) => {
+        this.markers.forEach((marker) => {
             const markerSquare = marker.index
             if (!index && (!type || type === marker.type) ||
                 !type && index === markerSquare ||
@@ -175,11 +185,24 @@ export class Board {
     }
 
     removeMarkers(type = undefined, index = undefined) {
-        if (typeof type === "string" || typeof index === "object") { // todo remove 2022-12-01
-            console.error("changed the signature of `removeMarkers` to `(type, index)` with v5.1.x")
-            return
+        if (!index && !type) {
+            this.markers = []
+        } else {
+            this.markers = this.markers.filter((marker) => {
+                if (!type) {
+                    if (index === marker.index) {
+                        return false
+                    }
+                } else if (!index) {
+                    if (marker.type === type) {
+                        return false
+                    }
+                } else if (marker.type === type && index === marker.index) {
+                    return false
+                }
+                return true
+            })
         }
-        this.state.removeMarkers(index, type)
         this.view.drawMarkers()
     }
 
@@ -215,7 +238,7 @@ export class Board {
         this.context.addEventListener("mouseup", this.squareSelectListener)
         this.context.addEventListener("touchstart", this.squareSelectListener)
         this.context.addEventListener("touchend", this.squareSelectListener)
-        this.state.squareSelectEnabled = true
+        this.squareSelectEnabled = true
         this.view.visualizeInputState()
     }
 
@@ -226,12 +249,12 @@ export class Board {
         this.context.removeEventListener("touchstart", this.squareSelectListener)
         this.context.removeEventListener("touchend", this.squareSelectListener)
         this.squareSelectListener = undefined
-        this.state.squareSelectEnabled = false
+        this.squareSelectEnabled = false
         this.view.visualizeInputState()
     }
 
     destroy() {
-        this.state.invokeExtensionPoints(EXTENSION_POINT.destroy)
+        this.invokeExtensionPoints(EXTENSION_POINT.destroy)
         this.positionAnimationsQueue.destroy()
         this.view.destroy()
         this.view = undefined
@@ -243,4 +266,18 @@ export class Board {
         }
     }
 
+    invokeExtensionPoints(name, data = {}) {
+        const extensionPoints = this.extensionPoints[name]
+        const dataCloned = Object.assign({}, data)
+        dataCloned.extensionPoint = name
+        let returnValue = true
+        if (extensionPoints) {
+            for (const extensionPoint of extensionPoints) {
+                if(extensionPoint(dataCloned) === false) {
+                    returnValue = false
+                }
+            }
+        }
+        return returnValue
+    }
 }

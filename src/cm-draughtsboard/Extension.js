@@ -23,10 +23,10 @@ export class Extension {
     }
 
     registerExtensionPoint(name, callback) {
-        if (!this.board.state.extensionPoints[name]) {
-            this.board.state.extensionPoints[name] = []
+        if (!this.board.extensionPoints[name]) {
+            this.board.extensionPoints[name] = []
         }
-        this.board.state.extensionPoints[name].push(callback)
+        this.board.extensionPoints[name].push(callback)
     }
 
     registerMethod(name, callback) {

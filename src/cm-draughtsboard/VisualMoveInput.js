@@ -36,18 +36,18 @@ export class VisualMoveInput {
         this.moveInputStartedCallback = (index) => {
             const result = moveInputStartedCallback(index)
             if(result) {
-                this.board.state.moveInputProcess = createTask()
+                this.board.moveInputProcess = createTask()
             }
             return result
         }
         this.validateMoveInputCallback = (fromIndex, toIndex) => {
             const result = validateMoveInputCallback(fromIndex, toIndex)
-            this.board.state.moveInputProcess.resolve(result)
+            this.board.moveInputProcess.resolve(result)
             return result
         }
         this.moveInputCanceledCallback = (reason, fromIndex, toIndex) => {
             moveInputCanceledCallback(reason, fromIndex, toIndex)
-            this.board.state.moveInputProcess.resolve()
+            this.board.moveInputProcess.resolve()
         }
         this.setMoveInputState(STATE.waitForInputStart)
     }
@@ -131,7 +131,7 @@ export class VisualMoveInput {
                 if (STATE.pieceClickedThreshold !== prevState) {
                     throw new Error("moveInputState")
                 }
-                if (this.view.board.state.inputEnabled) {
+                if (this.view.board.inputEnabled) {
                     this.view.setPieceVisibility(params.index, false)
                     this.createDraggablePiece(params.piece)
                 }
@@ -141,7 +141,7 @@ export class VisualMoveInput {
                 if (STATE.secondClickThreshold !== prevState) {
                     throw new Error("moveInputState")
                 }
-                if (this.view.board.state.inputEnabled) {
+                if (this.view.board.inputEnabled) {
                     this.view.setPieceVisibility(params.index, false)
                     this.createDraggablePiece(params.piece)
                 }
@@ -171,7 +171,7 @@ export class VisualMoveInput {
 
             case STATE.reset:
                 if (this.fromIndex && !this.toIndex && this.movedPiece) {
-                    this.board.state.setPiece(this.fromIndex, this.movedPiece)
+                    this.board.setPiece(this.fromIndex, this.movedPiece)
                 }
                 this.fromIndex = undefined
                 this.toIndex = undefined
@@ -233,14 +233,14 @@ export class VisualMoveInput {
                 if (pieceName) {
                     color = pieceName ? pieceName.substring(0, 1) : undefined
                     // allow scrolling, if not pointed on draggable piece
-                    if (color === "w" && this.board.state.inputWhiteEnabled ||
-                        color === "b" && this.board.state.inputBlackEnabled) {
+                    if (color === "w" && this.board.inputWhiteEnabled ||
+                        color === "b" && this.board.inputBlackEnabled) {
                         e.preventDefault()
                     }
                 }
                 if (this.moveInputState !== STATE.waitForInputStart ||
-                    this.board.state.inputWhiteEnabled && color === "w" ||
-                    this.board.state.inputBlackEnabled && color === "b") {
+                    this.board.inputWhiteEnabled && color === "w" ||
+                    this.board.inputBlackEnabled && color === "b") {
                     let point
                     if (e.type === "mousedown") {
                         point = {x: e.clientX, y: e.clientY}
@@ -311,7 +311,7 @@ export class VisualMoveInput {
                 } else {
                     this.setMoveInputState(STATE.dragTo, {index: this.fromIndex, piece: this.movedPiece})
                 }
-                if (this.view.board.state.inputEnabled) {
+                if (this.view.board.inputEnabled) {
                     this.moveDraggablePiece(pageX, pageY)
                 }
             }
@@ -331,7 +331,7 @@ export class VisualMoveInput {
                     this.updateStartEndMarkers()
                 }
             }
-            if (this.view.board.state.inputEnabled && (this.moveInputState === STATE.dragTo || this.moveInputState === STATE.clickDragTo)) {
+            if (this.view.board.inputEnabled && (this.moveInputState === STATE.dragTo || this.moveInputState === STATE.clickDragTo)) {
                 this.moveDraggablePiece(pageX, pageY)
             }
         }
@@ -351,7 +351,7 @@ export class VisualMoveInput {
                 if (this.moveInputState === STATE.dragTo || this.moveInputState === STATE.clickDragTo) {
                     if (this.fromIndex === index) {
                         if (this.moveInputState === STATE.clickDragTo) {
-                            this.board.state.setPiece(this.fromIndex, this.movedPiece)
+                            this.board.setPiece(this.fromIndex, this.movedPiece)
                             this.view.setPieceVisibility(this.fromIndex)
                             this.moveInputCanceledCallback(MOVE_CANCELED_REASON.draggedBack, index, index)
                             this.setMoveInputState(STATE.reset)
@@ -381,19 +381,19 @@ export class VisualMoveInput {
 
     updateStartEndMarkers() {
         if (this.board.props.style.moveFromMarker) {
-            this.board.state.removeMarkers(undefined, this.board.props.style.moveFromMarker)
+            this.board.removeMarkers(undefined, this.board.props.style.moveFromMarker)
         }
         if (this.board.props.style.moveToMarker) {
-            this.board.state.removeMarkers(undefined, this.board.props.style.moveToMarker)
+            this.board.removeMarkers(undefined, this.board.props.style.moveToMarker)
         }
         if (this.board.props.style.moveFromMarker) {
             if (this.fromIndex) {
-                this.board.state.addMarker(this.fromIndex, this.board.props.style.moveFromMarker)
+                this.board.addMarker(this.fromIndex, this.board.props.style.moveFromMarker)
             }
         }
         if (this.board.props.style.moveToMarker) {
             if (this.toIndex) {
-                this.board.state.addMarker(this.toIndex, this.board.props.style.moveToMarker)
+                this.board.addMarker(this.toIndex, this.board.props.style.moveToMarker)
             }
         }
         this.view.drawMarkers()

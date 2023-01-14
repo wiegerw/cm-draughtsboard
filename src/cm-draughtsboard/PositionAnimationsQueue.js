@@ -261,7 +261,7 @@ export class PositionAnimationsQueue extends PromiseQueue {
             new PositionsAnimation(this.board.view,
                 position, emptyPosition, animated ? duration : 0,
                 () => {
-                    this.board.state.orientation = color
+                    this.board.orientation = color
                     this.board.view.redrawBoard()
                     this.board.view.redrawPieces(emptyPosition.squares)
                     new PositionsAnimation(this.board.view,

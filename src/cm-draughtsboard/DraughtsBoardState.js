@@ -4,7 +4,6 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {BoardState} from "./BoardState.js"
 import {Position} from "./Position.js"
 
 export const DRAUGHTSPIECE = {
@@ -68,7 +67,7 @@ export function pieceTypeToPiece(piece)
   }
 }
 
-export class DraughtsBoardState extends BoardState {
+export class DraughtsBoardState extends Position {
 
     constructor(text = DRAUGHTS.empty,
                 rows = 10,
