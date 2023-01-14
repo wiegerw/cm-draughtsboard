@@ -89,10 +89,6 @@ export class DraughtsBoardState extends Position {
         this.setFen(text)
     }
 
-    clonePosition() {
-        return super.clone()
-    }
-
     setFen(text)
     {
         for (let i = 0; i < text.length; i++) {

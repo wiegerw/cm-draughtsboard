@@ -13,8 +13,8 @@ export class BoardView {
 
     constructor(board) {
         this.board = board
-        this.rows = board.state.rows
-        this.columns = board.state.columns
+        this.rows = board.rows
+        this.columns = board.columns
         this.moveInput = new VisualMoveInput(this,
             this.moveInputStartedCallback.bind(this),
             this.validateMoveInputCallback.bind(this),
@@ -427,7 +427,7 @@ export class BoardView {
             board: this.board,
             type: INPUT_EVENT_TYPE.moveInputStarted,
             index: index,
-            piece: this.board.getPiece(index)
+            piece: this.board.getPieceIndex(index)
         }
         if (this.moveInputCallback) {
             // the "oldschool" move input validator
@@ -445,7 +445,7 @@ export class BoardView {
             type: INPUT_EVENT_TYPE.moveDone,
             indexFrom: indexFrom,
             indexTo: indexTo,
-            piece: this.board.getPiece(indexFrom)
+            piece: this.board.getPieceIndex(indexFrom)
         }
         if (this.moveInputCallback) {
             // the "oldschool" move input validator

@@ -227,7 +227,7 @@ export class VisualMoveInput {
         if (e.type === "mousedown" && e.button === 0 || e.type === "touchstart") {
             const index = e.target.getAttribute("data-index")
             if (index) { // pointer on index
-                const pieceName = this.board.getPiece(index)
+                const pieceName = this.board.getPieceIndex(index)
                 // console.log("onPointerDown", index, pieceName)
                 let color
                 if (pieceName) {
@@ -263,9 +263,9 @@ export class VisualMoveInput {
                                 type: e.type
                             })
                         } else {
-                            const pieceName = this.board.getPiece(index)
+                            const pieceName = this.board.getPieceIndex(index)
                             const pieceColor = pieceName ? pieceName.substring(0, 1) : undefined
-                            const startPieceName = this.board.getPiece(this.fromIndex)
+                            const startPieceName = this.board.getPieceIndex(this.fromIndex)
                             const startPieceColor = startPieceName ? startPieceName.substring(0, 1) : undefined
                             if (color && startPieceColor === pieceColor) {
                                 this.moveInputCanceledCallback(MOVE_CANCELED_REASON.clickedAnotherPiece, this.fromIndex, index)
@@ -351,7 +351,7 @@ export class VisualMoveInput {
                 if (this.moveInputState === STATE.dragTo || this.moveInputState === STATE.clickDragTo) {
                     if (this.fromIndex === index) {
                         if (this.moveInputState === STATE.clickDragTo) {
-                            this.board.setPiece(this.fromIndex, this.movedPiece)
+                            this.board.setPieceIndex(this.fromIndex, this.movedPiece)
                             this.view.setPieceVisibility(this.fromIndex)
                             this.moveInputCanceledCallback(MOVE_CANCELED_REASON.draggedBack, index, index)
                             this.setMoveInputState(STATE.reset)

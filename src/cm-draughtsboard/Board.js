@@ -8,7 +8,7 @@
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./Extension.js"
 import {BoardView} from "./BoardView.js"
-import {createTask} from "./Position.js";
+import {createTask, Position} from "./Position.js";
 
 export const COLOR = {
     white: "w",
@@ -112,33 +112,46 @@ export class Board {
     }
 
     // API //
-
-    async setPiece(index, piece, animated = false) {
-        const positionFrom = this.state.clonePosition()
-        this.state.setPiece(index, piece)
-        this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
+    getPieceIndex(index) {
+        throw new Error("Board::getPieceIndex must be overridden")
     }
 
-    async movePiece(indexFrom, indexTo, animated = false) {
-        const positionFrom = this.state.clonePosition()
+    getPosition() {
+        let squares = new Array(this.rows * this.columns).fill(undefined)
+        const N = this.rows * this.columns
+        for (let i = 0; i < N; i++) 
+        {
+            squares[i] = this.getPieceIndex(i)
+        }
+        return new Position(this.rows, this.columns, squares)
+    }
+
+    async setPieceIndex(index, piece, animated = false) {
+        const positionFrom = this.getPosition()
+        this.state.setPiece(index, piece)
+        this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.getPosition(), animated)
+    }
+
+    async movePieceIndex(indexFrom, indexTo, animated = false) {
+        const positionFrom = this.getPosition()
         this.state.movePiece(indexFrom, indexTo)
         this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.getPosition(), animated)
     }
 
     async setPosition(fen, animated = false) {
-        const positionFrom = this.state.clonePosition()
+        const positionFrom = this.getPosition()
         const positionTo = this.state.createPosition(fen)
         if (!positionFrom.equals(positionTo)) {
             this.state.setFen(fen)
             this.invokeExtensionPoints(EXTENSION_POINT.positionChanged)
         }
-        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.state.clonePosition(), animated)
+        return this.positionAnimationsQueue.enqueuePositionChange(positionFrom, this.getPosition(), animated)
     }
 
     async setOrientation(color, animated = false) {
-        const position = this.state.clonePosition()
+        const position = this.getPosition()
         if (this.boardTurning) {
             console.log("setOrientation is only once in queue allowed")
             return
@@ -150,18 +163,11 @@ export class Board {
         })
     }
 
-    getPiece(index) {
-        return this.state.getPiece(index)
-    }
-
-    getPosition() {
-        return this.state.getFen()
-    }
-
     getOrientation() {
         return this.orientation
     }
 
+    // markers
     addMarker(type, index) {
         this.markers.push({index: index, type: type})
         this.view.drawMarkers()
