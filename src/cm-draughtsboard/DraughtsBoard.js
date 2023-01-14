@@ -17,33 +17,23 @@ export class DraughtsBoard extends Board {
         super(context, props)
     }
 
-    isNonPlayingField(field) {
-        let [r, c] = this.state.f2rc(field)
-        return this.state.isNonPlayingField(r, c)
-    }
-
-    setPiece(field, piece, animated = false) {
-        if (this.isNonPlayingField(field)) {
-            return
-        }
-        let index = this.state.f2index(field)
-        return super.setPiece(index, piece, animated)
+    getPieceIndex(index) {
+        return this.state.getPiece(index)
     }
 
     getPiece(field) {
-        if (this.isNonPlayingField(field)) {
-            return
-        }
         let index = this.state.f2index(field)
-        return super.getPiece(index)
+        return super.getPieceIndex(index)
+    }
+
+    setPiece(field, piece, animated = false) {
+        let index = this.state.f2index(field)
+        return super.setPieceIndex(index, piece, animated)
     }
 
     movePiece(fieldFrom, fieldTo, animated = false) {
-        if (this.isNonPlayingField(fieldFrom) || this.isNonPlayingField(fieldTo)) {
-            return
-        }
         let indexFrom = this.state.f2index(fieldFrom)
         let indexTo = this.state.f2index(fieldTo)
-        return super.movePiece(indexFrom, indexTo, animated)
+        return super.movePieceIndex(indexFrom, indexTo, animated)
     }
 }
