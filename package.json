@@ -29,9 +29,11 @@
   },
   "homepage": "https://github.com/shaack/cm-chessboard#readme",
   "devDependencies": {
+    "mocha": "^9.2.2",
     "teevi": "^2.2.2"
   },
   "dependencies": {
     "cm-chess": "^2.5.0"
+    ,"esm": "^3.2.25"
   }
 }
