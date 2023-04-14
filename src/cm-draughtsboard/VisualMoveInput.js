@@ -5,7 +5,7 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {Svg} from "./BoardView.js"
+import {Svg} from "./lib/Svg.js"
 import {createTask} from "./Position.js"
 
 const STATE = {

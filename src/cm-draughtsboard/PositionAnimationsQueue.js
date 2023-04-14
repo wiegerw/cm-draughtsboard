@@ -4,7 +4,7 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {Svg} from "./BoardView.js"
+import {Svg} from "./lib/Svg.js"
 import {Position} from "./Position.js"
 
 /*
