@@ -4,22 +4,30 @@
     <meta charset="UTF-8">
     <title>cm-draughtsboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
+    <link rel="stylesheet" href="../assets/extensions/markers/markers.css"/>
 </head>
 <body>
 <h1><a href="../">cm-chessboard</a></h1>
 <h2>Example: Input enabled without validation</h2>
-<p>Input enabled on both sides, without move validation.</p>
+<p>Input enabled on both sides, without move validation.
+    </p>
+<p>Additionally, the <b>Markers</b> extension is used with its
+    autoMarkers ability.</p>
 <div class="board" id="board"></div>
 <pre>
 const board = new Chessboard(document.getElementById("board"), {
     position: FEN.start,
-    sprite: {url: "../assets/images/chessboard-sprite-staunty.svg"}
+    assetsUrl: "../assets/",
+    style: {pieces: {file: "staunty.svg"}},
+    extensions: [{class: Markers}]
 })
 
 board.enableMoveInput(inputHandler)
 function inputHandler(event) {
+    console.log(event)
+    window.board.removeMarkers(MARKER_TYPE.frame)
     switch (event.type) {
         case INPUT_EVENT_TYPE.moveInputStarted:
             log(`moveInputStarted: ${event.square}`)
@@ -37,16 +45,22 @@ function inputHandler(event) {
 </button>
 <div id="output" style="width: 100%; overflow: hidden"></div>
 <script type="module">
-    import {DraughtsBoard, DRAUGHTS, INPUT_EVENT_TYPE} from "../../src/cm-draughtsboard/Draughts.js"
+    import {DraughtsBoard, DRAUGHTS, INPUT_EVENT_TYPE} from "../src/cm-draughtsboard/Draughts.js"
+    import {Markers} from "../src/cm-chessboard/extensions/markers/Markers.js";
 
     window.board = new DraughtsBoard(document.getElementById("board"), {
         position: DRAUGHTS.start,
-        sprite: {url: "../../data/pieces"}
+        sprite: {url: "../data/pieces"},
+        assetsUrl: "../assets/",
+        style: {pieces: {file: "staunty.svg"}},
+        extensions: [{class: Markers}]
     })
 
     window.board.enableMoveInput(inputHandler)
+
     function inputHandler(event) {
         console.log(event)
+        window.board.removeMarkers(MARKER_TYPE.frame)
         switch (event.type) {
             case INPUT_EVENT_TYPE.moveInputStarted:
                 log(`moveInputStarted: ${event.index}`)

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>cm-draughtsboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
 </head>
 <body>
 <h1><a href="../">cm-draughtsboard</a></h1>
@@ -50,12 +50,12 @@
       board.setPiece(28, undefined)
 </pre>
 <script type="module">
-    import {DraughtsBoard, DRAUGHTS, DRAUGHTSPIECE, PIECE_TYPE} from "../../src/cm-draughtsboard/Draughts.js"
+    import {DraughtsBoard, DRAUGHTS, DRAUGHTSPIECE} from "../src/cm-draughtsboard/Draughts.js"
 
     const board = new DraughtsBoard(document.getElementById("board"),
         {
             position: DRAUGHTS.start,
-            sprite: {url: "../../data/pieces"},
+            sprite: {url: "../data/pieces"},
             animationDuration: 500
         })
     let i = 0

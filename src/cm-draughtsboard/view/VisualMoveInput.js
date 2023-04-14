@@ -5,8 +5,8 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {Svg} from "./lib/Svg.js"
-import {createTask} from "./Position.js"
+import {Svg} from "../lib/Svg.js"
+import {createTask} from "../model/Position.js"
 
 const STATE = {
     waitForInputStart: 0,

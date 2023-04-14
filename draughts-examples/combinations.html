@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Draughts Analysis</title>
-    <link rel="stylesheet" href="../../data/styles/cm-chessboard.css"/>
-    <link rel="stylesheet" href="../../data/styles/analysis_layout.css" type="text/css">
-    <link rel="stylesheet" href="../../data/styles/analysis.css" type="text/css">
-    <script src="../../src/board.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="../data/styles/cm-chessboard.css"/>
+    <link rel="stylesheet" href="../data/styles/analysis_layout.css" type="text/css">
+    <link rel="stylesheet" href="../data/styles/analysis.css" type="text/css">
+    <script src="../src/board.js" type="text/javascript"></script>
 </head>
 <body>
 <!--#include virtual="/menu.html" -->
@@ -44,7 +44,7 @@
 </div>
 </div>
 <script type='module'>
-    import {DraughtsBoard} from "../../src/cm-draughtsboard/Draughts.js"
+    import {DraughtsBoard} from "../src/cm-draughtsboard/Draughts.js"
 states = [
 '.xx....x..xxxxx.xx.......o.oo....oxxooo..ooo..o.o.W',
 '.xx....x..xxxxx.xx.......o.oo...ooxxo.o..ooo..o.o.B',
@@ -120,7 +120,7 @@ window.toggleFieldNumbering = () =>
   board.view.redraw()
 }
 
-makeDiagrams("../../data/pieces");
+makeDiagrams("../data/pieces");
 SetBoard(board);
 Init();
 GoTo(0);

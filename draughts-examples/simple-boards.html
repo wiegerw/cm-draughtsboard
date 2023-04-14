@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>cm-draughtsboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="./styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
 </head>
 <body>
 <h1><a href="../">cm-chessboard</a></h1>
@@ -23,15 +23,15 @@ new Board(document.getElementById("board2"), {
 })
 </pre>
 <script type="module">
-    import {COLOR, DraughtsBoard, DRAUGHTS} from "../../src/cm-draughtsboard/Draughts.js"
+    import {COLOR, DraughtsBoard, DRAUGHTS} from "../src/cm-draughtsboard/Draughts.js"
 
     new DraughtsBoard(document.getElementById("board1"), {
         position: DRAUGHTS.start,
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board2"), {
         position: "...x.x.xxxx.xxxx.x..xx.o.x..o.oo.o.ooooo.o.o.o.o..B",
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
         orientation: COLOR.black
     })
 </script>

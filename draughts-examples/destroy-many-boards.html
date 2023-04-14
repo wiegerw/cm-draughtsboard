@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>cm-chessboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
     <!--suppress CssUnusedSymbol -->
-    <style type="text/css">
+    <style>
         div.board {
             float: left;
             width: 4.2vw;
@@ -29,7 +29,7 @@
 <h2>Stress Test: Create and destroy 5,000 responsive boards</h2>
 <div id="boards"></div>
 <script type="module">
-    import {COLOR, DraughtsBoard, DRAUGHTS} from "../../src/cm-draughtsboard/Draughts.js"
+    import {COLOR, DraughtsBoard, DRAUGHTS} from "../src/cm-draughtsboard/Draughts.js"
 
     const boardsDiv = document.getElementById("boards")
     const boardDiv = document.createElement("div")
@@ -48,7 +48,7 @@
             const board = new DraughtsBoard(boardDiv, {
                 position: Math.round(Math.random()) ? DRAUGHTS.start : DRAUGHTS.empty,
                 orientation: Math.round(Math.random()) ? COLOR.white : COLOR.black,
-                sprite: {url: "../../data/pieces"},
+                sprite: {url: "../data/pieces"},
                 style: { aspectRatio: undefined }
             })
             setTimeout(() => {

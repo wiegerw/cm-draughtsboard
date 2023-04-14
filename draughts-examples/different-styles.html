@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>cm-chessboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
 </head>
 <body>
 <h1><a href="../">cm-chessboard</a></h1>
@@ -20,7 +20,7 @@
 <div class="board" id="board8"></div>
 <div class="board" id="board9"></div>
 <script type="module">
-    import {BORDER_TYPE, DRAUGHTS, DraughtsBoard} from "../../src/cm-draughtsboard/Draughts.js"
+    import {BORDER_TYPE, DRAUGHTS, DraughtsBoard} from "../src/cm-draughtsboard/Draughts.js"
 
     new DraughtsBoard(document.getElementById("board1"), {
         position: DRAUGHTS.start,
@@ -28,7 +28,7 @@
             cssClass: "green",
             borderType: BORDER_TYPE.frame
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board2"), {
         position: DRAUGHTS.start,
@@ -36,7 +36,7 @@
             cssClass: "chessboard-js",
             borderType: BORDER_TYPE.thin
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board3"), {
         position: DRAUGHTS.start,
@@ -44,7 +44,7 @@
             cssClass: "chess-club",
             borderType: BORDER_TYPE.frame
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board4"), {
         position: DRAUGHTS.start,
@@ -53,14 +53,14 @@
             borderType: BORDER_TYPE.thin,
             showCoordinates: false,
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board5"), {
         position: DRAUGHTS.start,
         style: {
             borderType: BORDER_TYPE.none
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board6"), {
         position: DRAUGHTS.start,
@@ -68,21 +68,21 @@
             cssClass: "blue",
             borderType: BORDER_TYPE.frame
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board7"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "green"
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board8"), {
         position: DRAUGHTS.start,
         style: {
             cssClass: "black-and-white"
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
     new DraughtsBoard(document.getElementById("board9"), {
         position: DRAUGHTS.start,
@@ -90,7 +90,7 @@
             cssClass: "chessboard-js",
             borderType: BORDER_TYPE.frame
         },
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
     })
 </script>
 </body>

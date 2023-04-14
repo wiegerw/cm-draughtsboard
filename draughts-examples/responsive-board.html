@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>cm-chessboard</title>
     <meta name="viewport" content="width=device-width, user-scalable=yes, initial-scale=1.0"/>
-    <link rel="stylesheet" href="../styles/examples.css"/>
-    <link rel="stylesheet" href="../../assets/chessboard.css"/>
+    <link rel="stylesheet" href="styles/examples.css"/>
+    <link rel="stylesheet" href="../assets/chessboard.css"/>
 </head>
 <body>
 <h1><a href="../">cm-chessboard</a></h1>
@@ -18,11 +18,11 @@ new Board(document.getElementById("board"), {
     })
 </pre>
 <script type="module">
-    import {DraughtsBoard, DRAUGHTS} from "../../src/cm-draughtsboard/Draughts.js"
+    import {DraughtsBoard, DRAUGHTS} from "../src/cm-draughtsboard/Draughts.js"
 
     new DraughtsBoard(document.getElementById("board"), {
         position: DRAUGHTS.start,
-        sprite: {url: "../../data/pieces"},
+        sprite: {url: "../data/pieces"},
         style: { aspectRatio: 0.9 }
     })
 </script>

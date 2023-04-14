@@ -6,7 +6,7 @@
  */
 
 import {Board} from "./Board.js"
-import {DraughtsBoardState} from "./DraughtsBoardState.js"
+import {DraughtsBoardState} from "./model/DraughtsBoardState.js"
 
 export class DraughtsBoard extends Board {
 
