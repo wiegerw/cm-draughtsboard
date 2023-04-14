@@ -6,7 +6,7 @@
  */
 
 import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
-import {EXTENSION_POINT} from "./Extension.js"
+import {EXTENSION_POINT} from "./model/Extension.js"
 import {BoardView} from "./BoardView.js"
 import {createTask, Position} from "./Position.js";
 

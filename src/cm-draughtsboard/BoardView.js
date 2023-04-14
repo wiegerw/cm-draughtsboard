@@ -7,7 +7,7 @@
 
 import {VisualMoveInput} from "./VisualMoveInput.js"
 import {BORDER_TYPE, COLOR, INPUT_EVENT_TYPE} from "./Board.js"
-import {EXTENSION_POINT} from "./Extension.js"
+import {EXTENSION_POINT} from "./model/Extension.js"
 import {Svg} from "./lib/Svg.js"
 
 export class BoardView {
