@@ -4,8 +4,8 @@
  * Repository: https://github.com/wiegerw/cm-draughtsboard
  * License: MIT, see file 'LICENSE'
  */
-import {Svg} from "./lib/Svg.js"
-import {Position} from "./Position.js"
+import {Svg} from "../lib/Svg.js"
+import {Position} from "../model/Position.js"
 
 /*
 * Thanks to markosyan for the idea of the PromiseQueue

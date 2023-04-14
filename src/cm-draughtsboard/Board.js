@@ -5,10 +5,10 @@
  * License: MIT, see file 'LICENSE'
  */
 
-import {PositionAnimationsQueue} from "./PositionAnimationsQueue.js"
+import {PositionAnimationsQueue} from "./view/PositionAnimationsQueue.js"
 import {EXTENSION_POINT} from "./model/Extension.js"
-import {BoardView} from "./BoardView.js"
-import {createTask, Position} from "./Position.js";
+import {BoardView} from "./view/BoardView.js"
+import {createTask, Position} from "./model/Position.js";
 
 export const COLOR = {
     white: "w",
